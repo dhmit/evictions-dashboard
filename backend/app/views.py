@@ -24,7 +24,7 @@ context = {
 }
 """
 from django.shortcuts import render
-
+from app import models
 
 def index(request):
     """
@@ -38,4 +38,16 @@ def index(request):
         'component_name': 'Home'
     }
 
+    return render(request, 'index.html', context)
+
+
+def get_city(request):
+    cities = models.City.objects.all().order_by('id')
+    print("cities", cities)
+    context = {
+        'page_metadata': {
+            'title': 'Home page'
+        },
+        'component_name': 'Home'
+    }
     return render(request, 'index.html', context)

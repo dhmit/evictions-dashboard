@@ -27,5 +27,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # API endpoints
-    path('', views.index)
+    path('', views.index),
+    path('cities/', views.get_city)
 ]

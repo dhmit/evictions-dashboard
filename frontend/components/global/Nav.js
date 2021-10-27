@@ -6,7 +6,7 @@ const Nav = () => {
 
     return (
         <nav className="navbar navbar-light bg-light navbar-expand-sm">
-            <a className={`navbar-brand ${STYLES.linkHome}`} href="/">Boilerplate app</a>
+            <a className={`navbar-brand ${STYLES.linkHome}`} href="/">Eviction dashboard</a>
             <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
                 </li>
