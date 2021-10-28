@@ -28,5 +28,5 @@ urlpatterns = [
 
     # API endpoints
     path('', views.index),
-    path('cities/', views.get_city)
+    path('cities/', views.get_cities)
 ]

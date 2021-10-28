@@ -1,11 +1,12 @@
 import React from "react";
 import Plot from "react-plotly.js";
-
+import CitiesDropdown from "./CitiesDropdown.js";
 
 const Home = () => {
 
     return (
         <>
+            <CitiesDropdown/>
             <Plot
                 data={[
                     {

@@ -24,7 +24,9 @@ context = {
 }
 """
 from django.shortcuts import render
-from app import models
+from django.http import HttpResponse, JsonResponse
+from django.core import serializers
+from app.models import City
 
 def index(request):
     """
@@ -41,13 +43,6 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-def get_city(request):
-    cities = models.City.objects.all().order_by('id')
-    print("cities", cities)
-    context = {
-        'page_metadata': {
-            'title': 'Home page'
-        },
-        'component_name': 'Home'
-    }
-    return render(request, 'index.html', context)
+def get_cities(request):
+    cities = City.objects.values_list('id', flat=True).order_by('id')
+    return JsonResponse({"cities": list(cities)})
