@@ -11,6 +11,7 @@ from django.db import models
 class City(models.Model):
     id = models.SlugField(primary_key=True, blank=False, null=False)
     name = models.CharField(max_length=200, blank=False, null=False)
+    town = models.ForeignKey('MaTowns', blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name.capitalize()
@@ -21,7 +22,10 @@ class Evictions(models.Model):
     case_status = models.TextField(blank=True, null=True)
     case_type = models.TextField(blank=True, null=True)
     city = models.ForeignKey('City', models.SET_NULL, null=True)
+    town = models.ForeignKey('MaTowns', blank=True, null=True, on_delete=models.SET_NULL)
+    census_bg = models.ForeignKey('CensusBgs', blank=True, null=True, on_delete=models.SET_NULL)
     close_date = models.DateField(blank=True, null=True)
+    # def = defendant
     def_field = models.TextField(db_column='def', blank=True,
                                  null=True)  # Field renamed because it was a Python reserved word.
     def_addl = models.TextField(blank=True, null=True)
@@ -35,6 +39,7 @@ class Evictions(models.Model):
     docket = models.TextField(blank=True, null=True)
     file_date = models.DateField(blank=True, null=True)
     last_updated = models.DateField(blank=True, null=True)
+    # ptf = plaintiff
     ptf = models.TextField(blank=True, null=True)
     ptf_atty = models.TextField(blank=True, null=True)
     ptf_atty_add = models.TextField(blank=True, null=True)
@@ -53,6 +58,12 @@ class Evictions(models.Model):
     class Meta:
         managed = True
         db_table = 'evictions'
+
+    def __str__(self):
+        if self.town:
+            return "%s: Town: %s (city matches)" % (self.id, self.town.id)
+        else:
+            return "%s: City: %s (no town found)" % (self.id, self.city.name)
 
 
 class Judgments(models.Model):
@@ -124,7 +135,7 @@ class CensusTracts(models.Model):
     hs_ged_pct = models.FloatField(blank=True, null=True)
     postbacc_pct = models.FloatField(blank=True, null=True)
     geometry = models.TextField(blank=True, null=True)  # This field type is a guess.
-    ma_towns = models.CharField(max_length=200, blank=True, null=True)
+    ma_town = models.ForeignKey('MaTowns', models.SET_NULL, null=True)
 
     class Meta:
         managed = True
@@ -201,6 +212,9 @@ class MaTowns(models.Model):
     class Meta:
         managed = True
         db_table = 'ma_towns'
+
+    def __str__(self):
+        return self.id
 
 
 class MaWardsPrecincts(models.Model):
@@ -294,10 +308,10 @@ class CensusBgs(models.Model):
     hs_ged_pct = models.FloatField(blank=True, null=True)
     postbacc_pct = models.FloatField(blank=True, null=True)
     geometry = models.TextField(blank=True, null=True)  # This field type is a guess.
-    ma_towns = models.CharField(max_length=200, blank=True, null=True)
+    ma_town = models.ForeignKey('MaTowns', models.SET_NULL, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'census_bgs'
 
 
@@ -438,3 +452,5 @@ class UpdateMeta(models.Model):
     class Meta:
         managed = False
         db_table = 'update_meta'
+
+#
