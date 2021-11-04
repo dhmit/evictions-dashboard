@@ -31,4 +31,5 @@ urlpatterns = [
     path('cities/', views.get_cities),
     path(r"eviction/<id>", views.get_eviction_by_id),
     path(r"evictions/<city>", views.get_evictions),
+    path(r"statistics", views.get_statistics),
 ]
