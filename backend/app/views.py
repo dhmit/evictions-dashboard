@@ -62,6 +62,7 @@ def get_evictions(request, city):
                 {"2020": [0, 0, 0, 1, 0, 0, 0, 0, 2, 2, 2, 13],
                 "2021": [0, 4, 5, 9, 3, 4, 9, 5, 9, 1, 0, 0]}}
     """
+
     evictions = Evictions.objects.filter(city__id=city) \
         .annotate(year=TruncYear('file_date'), month=TruncMonth('file_date'), ) \
         .order_by('file_date__year', 'file_date__month') \
@@ -73,14 +74,10 @@ def get_evictions(request, city):
         year = evictions_per_month['file_date__year']
         month = evictions_per_month['file_date__month']
         count = evictions_per_month['count']
-        # if year exists
-        if year in formatted:
-            formatted[year][month - 1] = evictions_per_month[
-                'count']
-        # if year doesn't exist, add it, initialize 12 months as zeros in list
-        else:
+        if year not in formatted:
             formatted[year] = [0] * 12
-    print('get evictions:::', formatted)
+
+        formatted[year][month - 1] = count
     return JsonResponse({"evictions": formatted})
 
 
