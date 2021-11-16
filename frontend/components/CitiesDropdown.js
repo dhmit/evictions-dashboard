@@ -3,7 +3,7 @@ import React from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
 
-const baseURL = "/cities";
+const baseURL = "/locales";
 
 function formatCities(city) {
     // react-select expects {value: something, label: something}
@@ -19,6 +19,7 @@ export default class CitiesDropdown extends React.Component {
     };
     state = {
         cities: [],
+        typeOfLocale: 'town', // TODO: show radio buttons for city/town choice
         filterMajority: undefined,
         radios: FILTERS_MAJORITY.reduce(
             (options, option) => ({
@@ -69,14 +70,15 @@ export default class CitiesDropdown extends React.Component {
     }
 
     populateCities(filter) {
-        let url = baseURL;
+        let url = baseURL + "?type=" + this.state.typeOfLocale;
         if (filter) {
             url += "?filter=" + filter.toLowerCase();
         }
-        console.log("populateCities:",url);
+
         axios.get(`${url}`)
             .then(res => {
                 const cities_res = res.data.cities;
+                console.log('getting cities?', cities_res)
                 const cities = cities_res.map(formatCities);
                 this.setState({cities});
             });
@@ -85,22 +87,9 @@ export default class CitiesDropdown extends React.Component {
     render() {
         return <>
             <Select id={"cities-dropdown"}
-                    className={"select col-6"}
+                    className={"select"}
                     onChange={this.changeHandler}
                     options={this.state.cities}/>
-
-
-            {/*<div className="input-group mb-3">*/}
-            {/*    <div className="input-group-prepend">*/}
-            {/*        {this.createRadios()}*/}
-            {/*        <div className="input-group-text">*/}
-            {/*            <input type={"button"}*/}
-            {/*                   onClick={this.resetRadios}*/}
-            {/*                   value={"reset"}/>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-        </>
-            ;
+        </>;
     }
 }

@@ -1,3 +1,22 @@
 .body {
-  padding: 0.5rem;
+    padding: 0.5rem;
+}
+
+#dashboard {
+    display: grid;
+    //grid-column-gap: 1em;
+    grid-row-gap: 1em;
+    grid-template-areas: "map cities";
+    @media (max-width: 1200px) {
+        grid-template-areas: "map"
+                             "cities";
+    }
+}
+
+#map {
+    grid-area: map;
+}
+
+#cities {
+    grid-area: cities;
 }

@@ -29,7 +29,7 @@ from django.http import JsonResponse
 from django.db.models import F
 
 from django.db.models import Count
-from app.models import City, Evictions, CensusBgs
+from app.models import City, Evictions, CensusBgs, MaTowns
 from django.db.models.functions import TruncYear, TruncMonth
 
 
@@ -40,7 +40,7 @@ def index(request):
 
     context = {
         'page_metadata': {
-            'title': 'Home page'
+            'title': 'Home page',
         },
         'component_name': 'Home'
     }
@@ -48,23 +48,30 @@ def index(request):
     return render(request, "index.html", context)
 
 
-def get_cities(request):
-    cities = City.objects.values_list('id', flat=True).order_by('id')
-    return JsonResponse({"cities": list(cities)})
+def get_locales(request):
+    type_of_place = request.GET.get('type')
+    if type_of_place == 'town':
+        locales = Evictions.objects.filter(town__isnull=False).distinct('town') \
+            .values_list('town_id', flat=True).order_by('town_id')
+    else:
+        locales = City.objects.all().values_list('id', flat=True).order_by('id')
+    return JsonResponse({"cities": list(locales)})
 
 
-def get_evictions(request, city):
+def get_evictions(request, locale):
     """
-    returns per city:
+    returns per town:
             {"evictions: {year: [list of counts per month}}
             Example:
             {"evictions":
                 {"2020": [0, 0, 0, 1, 0, 0, 0, 0, 2, 2, 2, 13],
                 "2021": [0, 4, 5, 9, 3, 4, 9, 5, 9, 1, 0, 0]}}
     """
+    type_of_place = request.GET.get('type')
+    evictions = Evictions.objects.filter(town__id=locale) if type_of_place == 'town' else \
+        Evictions.objects.filter(city__id=locale)
 
-    evictions = Evictions.objects.filter(city__id=city) \
-        .annotate(year=TruncYear('file_date'), month=TruncMonth('file_date'), ) \
+    evictions = evictions.annotate(year=TruncYear('file_date'), month=TruncMonth('file_date'), ) \
         .order_by('file_date__year', 'file_date__month') \
         .values('file_date__year', 'file_date__month') \
         .annotate(count=Count('pk'))
