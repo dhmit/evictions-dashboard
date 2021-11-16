@@ -1,28 +1,3 @@
-"""
-These view functions and classes implement both standard GET routes and API endpoints.
-
-GET routes produce largely empty HTML pages that expect a React component to attach to them and
-handle most view concerns. You can supply a few pieces of data in the render function's context
-argument to support this expectation.
-
-Of particular use are the properties: page_metadata, component_props, and component_name:
-page_metadata: these values will be included in the page's <head> element.
-Currently, only the `title` property is used. component_props: these can be any properties you
-wish to pass into your React components as its highest-level props.
-component_name: this should reference the exact name of the React component
-you intend to load onto the page.
-
-Example:
-context = {
-    'page_metadata': {
-        'title': 'Example ID page'
-    },
-    'component_props': {
-        'id': example_id
-    },
-    'component_name': 'ExampleId'
-}
-"""
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -70,7 +45,6 @@ def get_evictions(request, locale):
     type_of_place = request.GET.get('type')
     evictions = Evictions.objects.filter(town__id=locale) if type_of_place == 'town' else \
         Evictions.objects.filter(city__id=locale)
-
     evictions = evictions.annotate(year=TruncYear('file_date'), month=TruncMonth('file_date'), ) \
         .order_by('file_date__year', 'file_date__month') \
         .values('file_date__year', 'file_date__month') \
@@ -167,3 +141,9 @@ def get_statistics(request):
             })
 
     return JsonResponse(results)
+
+
+def get_census_tracts(request):
+    with open("app/census_tracts_geo.json", "r") as f:
+        census_tracts = json.load(f)
+    return JsonResponse(census_tracts)

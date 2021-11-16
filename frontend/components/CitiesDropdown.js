@@ -78,7 +78,6 @@ export default class CitiesDropdown extends React.Component {
         axios.get(`${url}`)
             .then(res => {
                 const cities_res = res.data.cities;
-                console.log('getting cities?', cities_res)
                 const cities = cities_res.map(formatCities);
                 this.setState({cities});
             });

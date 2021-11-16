@@ -30,7 +30,7 @@ export default class CitiesGraph extends React.Component {
 
     populateGraph = (town, label) => {
         // todo: allow switching between town and city
-        axios.get(`${baseURL}` + town + '?type=town')
+        axios.get(`${baseURL}` + town + "?type=town")
             .then(res => {
                 const evictions_res = res.data.evictions;
                 this.plotBarChart(evictions_res);
@@ -56,7 +56,7 @@ export default class CitiesGraph extends React.Component {
         for (let year in evictions) {
             let data = this.getPlotlyDataObject(months.slice());
             for (let month = 0; month < evictions[year].length; month++) {
-                data.x[month] = data.x[month] + " '" + year.slice(2);
+                data.x[month] = data.x[month] + ", '" + year.slice(2);
                 data.y[month] = evictions[year][month];
             }
             data.name = year;
@@ -73,7 +73,9 @@ export default class CitiesGraph extends React.Component {
         });
         this.populateGraph(townObj.value, townObj.label);
     }
-
+    componentDidMount = () => {
+        this.populateGraph('BOSTON', 'Boston');
+    }
     render() {
         return <>
             <CitiesDropdown
