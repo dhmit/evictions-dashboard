@@ -6,14 +6,14 @@ import STYLES from "./Map.module.scss";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 
-const baseURL = "census_tracts";
+const baseURL = "geodata";
 export default class Map extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            lng: -70.9,
+            lng: -71.66,
             lat: 42,
-            zoom: 9,
+            zoom: 7,
             layers: []
         };
         this.mapContainer = React.createRef();
@@ -23,27 +23,10 @@ export default class Map extends React.PureComponent {
         const {lng, lat, zoom, layers} = this.state;
         const map = new mapboxgl.Map({
             container: this.mapContainer.current,
-            style: 'mapbox://styles/mapbox/light-v10',
+            style: 'mapbox://styles/aizman/ckw26hibv0x7114no6riwwzol',
             center: [lng, lat],
             zoom: zoom,
         });
-        this.getData().then((layers) => {
-            map.on('load', () => {
-                map.addSource("census-tracts", {
-                    type: 'geojson',
-                    data: layers
-                })
-                map.addLayer({
-                    id: 'census-tracts-fill',
-                    type: "line",
-                    source: "census-tracts",
-                    paint: {
-                        "line-color": "#6382f2",
-                        "line-width": 1,
-                    },
-                })
-            })
-        })
         map.on('move', () => {
             this.setState({
                 lng: map.getCenter().lng.toFixed(4),
@@ -51,17 +34,12 @@ export default class Map extends React.PureComponent {
                 zoom: map.getZoom().toFixed(2)
             });
         })
-        map.on('click', (evt) => {
-            console.log("clicking evt", evt)
+        map.on('click', (e) => {
+            const features = map.queryRenderedFeatures(e.point);
+            console.log(features[0].properties.id, features[0].properties.ma_town_id);
         })
     }
 
-    getData = () => {
-        return axios.get(`${baseURL}`)
-            .then(res => {
-                return res.data;
-            })
-    }
     minHeight = {
         minHeight: "400px"
     }

@@ -143,7 +143,10 @@ def get_statistics(request):
     return JsonResponse(results)
 
 
-def get_census_tracts(request):
-    with open("app/census_tracts_geo.json", "r") as f:
+def get_geodata(request):
+    with open("app/data/census_tracts_geo.json", "r") as f:
         census_tracts = json.load(f)
-    return JsonResponse(census_tracts)
+
+    with open("app/data/towns_geo.json", "r") as f:
+        towns = json.load(f)
+    return JsonResponse({"census": census_tracts, "towns": towns})

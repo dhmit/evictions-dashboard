@@ -19,6 +19,8 @@ class Evictions(models.Model):
     city = models.ForeignKey('City', models.SET_NULL, null=True)
     town = models.ForeignKey('MaTowns', blank=True, null=True, on_delete=models.SET_NULL)
     census_bg = models.ForeignKey('CensusBgs', blank=True, null=True, on_delete=models.SET_NULL)
+    census_tract = models.ForeignKey('CensusTracts', blank=True, null=True,
+                                     on_delete=models.SET_NULL)
     close_date = models.DateField(blank=True, null=True)
     # def = defendant
     def_field = models.TextField(db_column='def', blank=True,
@@ -215,7 +217,9 @@ class MaTowns(models.Model):
 class MaWardsPrecincts(models.Model):
     id = models.TextField(primary_key=True)
     ward = models.TextField(blank=True, null=True)
+    # electoral precinct
     precinct = models.TextField(blank=True, null=True)
+    # court district
     district = models.TextField(blank=True, null=True)
     pop_2010 = models.FloatField(blank=True, null=True)
     town = models.TextField(blank=True, null=True)
