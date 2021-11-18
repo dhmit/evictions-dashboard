@@ -76,6 +76,7 @@ export default class CitiesGraph extends React.Component {
     componentDidMount = () => {
         this.populateGraph('BOSTON', 'Boston');
     }
+
     render() {
         return <>
             <CitiesDropdown
@@ -87,6 +88,21 @@ export default class CitiesGraph extends React.Component {
                     {
                         title: this.state.plotlyTitle,
                         margin: {l: 20, r: 0, t: 140, b: 80},
+                        paper_bgcolor: "rgba(0,0,0,0)",
+                        plot_bgcolor: "rgba(0,0,0,0)",
+                        showgrid: false,
+                        font: {
+                            size: 10,
+                            color: '#ffffff'
+                        },
+                        xaxis: {
+                            showgrid: false,
+                            showline: false
+                        },
+                        yaxis: {
+                            showgrid: false,
+                            showline: false
+                        }
                     }
                 }
             />

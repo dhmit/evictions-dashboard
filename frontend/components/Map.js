@@ -17,6 +17,7 @@ export default class Map extends React.PureComponent {
             lat: 42,
             zoom: 7,
             layers: [],
+            hoveredStateId: undefined,
         };
         this.mapContainer = React.createRef();
     }
@@ -25,10 +26,30 @@ export default class Map extends React.PureComponent {
         const {lng, lat, zoom, layers} = this.state;
         const map = new mapboxgl.Map({
             container: this.mapContainer.current,
-            style: 'mapbox://styles/aizman/ckw53ue590vl914o477esyuv3',
+            style: 'mapbox://styles/aizman/ckw5c5ytz033m15oi2z4tzj74',
             center: [lng, lat],
             zoom: zoom,
+            minZoom: 6,
+            maxZoom: 9
         });
+        map.on('load', () => {
+            map.addLayer({
+                'id': 'census-fills',
+                'type': 'fill',
+                'source': 'composite',
+                'source-layer': 'census_tracts_geo-8o5nll',
+                'layout': {},
+                'paint': {
+                    'fill-color': '#ffdc59',
+                    'fill-opacity': [
+                        'case',
+                        ['boolean', ['feature-state', 'click'], false],
+                        1,
+                        0
+                    ]
+                }
+            });
+        })
         map.addControl(new mapboxgl.NavigationControl());
         map.on('move', () => {
             this.setState({
@@ -37,8 +58,10 @@ export default class Map extends React.PureComponent {
                 zoom: map.getZoom().toFixed(2)
             });
         })
-        map.on('click', (e) => {
+        map.on('click', 'census', (e) => {
             const features = map.queryRenderedFeatures(e.point);
+
+            console.log(features[0].properties.id)
             this.props.setStats({
                 locale: {
                     city: "",
@@ -47,7 +70,31 @@ export default class Map extends React.PureComponent {
                 evictions: features[0].properties.evictions,
                 stats: {}
             })
-        })
+            if (e && e.features && e.features.length > 0) {
+                if (this.state.hoveredStateId) {
+                    map.setFeatureState(
+                        {
+                            source: 'composite',
+                            sourceLayer: 'census_tracts_geo-8o5nll',
+                            id: this.state.hoveredStateId,
+                        },
+                        {click: false}
+                    );
+                }
+                this.setState({hoveredStateId: e.features[0].id});
+                map.setFeatureState(
+                    {
+                        source: 'composite',
+                        sourceLayer: 'census_tracts_geo-8o5nll',
+                        id: this.state.hoveredStateId
+                    },
+                    {click: true}
+                );
+            }
+        });
+        // map.on('mousemove', 'census', (e) => {
+        //
+        // });
     }
 
     minHeight = {

@@ -26,6 +26,11 @@ export default class Home extends React.Component {
                 <div id={"map"}>
                     <Map setStats={this.setStats.bind(this)}
                     />
+                    {this.state.locale.town &&
+                    <>
+                        <h1>Town: {this.state.locale.town.toLowerCase()}</h1>
+                        <h3>Evictions: {this.state.evictions}</h3>
+                    </>}
                 </div>
                 <div id={"cities"}>
                     <CitiesGraph/>
