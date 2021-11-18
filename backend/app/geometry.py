@@ -1,4 +1,4 @@
-from models import Evictions, CensusBgs, CensusTracts
+from models import Evictions, CensusBgs, CensusTracts, MaTowns
 from shapely import wkb
 from geopandas import gpd
 import pandas as pd
@@ -31,3 +31,33 @@ for index, row in pointInPoly.iterrows():
         pass
     # print(row['c1'], row['c2'])
 
+
+def get_evictions_by_censustract(id):
+    evictions_count = CensusTracts.objects.get(pk=id).evictions_set.count()
+    print(id, evictions_count)
+    return evictions_count
+
+
+def census_tracts_to_geojson():
+    """
+    Create GeoJSON from census tracts
+    """
+    census = CensusTracts.objects.all().values()
+    census_df = pd.DataFrame(census)
+    census_gpd = gpd.GeoDataFrame(census_df)
+    census_gpd['geometry'] = census_gpd['geometry'].transform(transform_to_geo)
+    census_gpd['evictions'] = census_gpd.apply(lambda row: get_evictions_by_censustract(row.id),
+                                               axis=1)
+    census_gpd[['geometry', 'id', 'ma_town_id', 'evictions']].to_file(
+        "./app/data/census_tracts_geo.json", driver="GeoJSON")
+
+
+def towns_to_geojson():
+    """
+    Create GeoJSON from census tracts
+    """
+    towns = MaTowns.objects.all().values()
+    towns_df = pd.DataFrame(towns)
+    towns_gpd = gpd.GeoDataFrame(towns_df)
+    towns_gpd['geometry'] = towns_gpd['geometry'].transform(transform_to_geo)
+    towns_gpd['geometry'].to_file("./app/data/towns_geo.json", driver="GeoJSON")
