@@ -10,7 +10,8 @@ export default class Home extends React.Component {
         this.state = {
             locale: {"city": "", "town": ""},
             evictions: 0,
-            stats: {}
+            stats: {},
+            tract: 0,
         };
     }
 
@@ -18,7 +19,8 @@ export default class Home extends React.Component {
         this.setState({
             locale: stats.locale,
             evictions: stats.evictions,
-            stats: stats.stats
+            stats: stats.stats,
+            tract: stats.tract,
         })
     }
 
@@ -32,6 +34,7 @@ export default class Home extends React.Component {
                 <div className={STYLES.stats} id={"stats"}>
                     <Stats locale={this.state.locale}
                            evictions={this.state.evictions}
+                           tract={this.state.tract}
                            stats={this.state.stats}/>
                 </div>
                 <div className={STYLES.cities} id={"cities"}>

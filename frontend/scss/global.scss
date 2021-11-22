@@ -1,3 +1,31 @@
+ul {
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+/* TEXT STYLES */
+.green-text {
+    color: $green;
+}
+
+.blue-text {
+    color: $blue;
+}
+
+.red-text {
+    color: $red;
+}
+
+.pink-text {
+    color: $pink;
+}
+.white-text {
+    color: $white;
+}
+
 #main-container {
-  padding: 1em 2em;
+    padding: 1em 2em;
 }

@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 const sourceLayer = "census_tracts_geo-8tw3r3"
+const stats = {
+    lng: -71.7,
+    lat: 42.1,
+    zoom: 7,
+}
 export default class Map extends React.PureComponent {
     static propTypes = {
         setStats: PropTypes.func,
@@ -61,12 +66,12 @@ export default class Map extends React.PureComponent {
         map.on('click', 'census', (e) => {
             const features = map.queryRenderedFeatures(e.point);
             const stats = features[0].properties
-            console.log(features[0].properties.id)
             this.props.setStats({
                 locale: {
                     city: "",
                     town: stats.ma_town_id
                 },
+                tract: stats.id,
                 evictions: stats.evictions,
                 stats: {
                     asian_pop: stats.asian_pop,
@@ -100,14 +105,17 @@ export default class Map extends React.PureComponent {
                 );
             }
         });
-        // map.on('mousemove', 'census', (e) => {
-        //
-        // });
     }
 
+    reset = () => {
+        this.setState({
+            lng: stats.lng,
+            lat: stats.lat,
+            zoom: stats.zoom
+        })
+    }
     mapStyles = {
         minHeight: "400px",
-        border: "1px solid pink"
     }
 
     render() {

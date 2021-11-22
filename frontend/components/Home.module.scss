@@ -12,6 +12,7 @@
                              "stats"
                              "cities"
                              "details";
+        grid-template-columns: 95%;
     }
 }
 
@@ -24,17 +25,14 @@
 
 .stats {
     grid-area: stats;
-    border: 1px solid yellow;
 }
 
 .cities {
     grid-area: cities;
-    border: 1px solid cornflowerblue;
 }
 
 .details {
     grid-area: details;
-    border: 1px solid mediumseagreen;
 }
 
 #map {

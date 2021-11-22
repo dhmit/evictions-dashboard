@@ -11,9 +11,10 @@ const Nav = () => {
                 <li className="nav-item">
                 </li>
             </ul>
-            <a className={STYLES.linkLab} href="https://digitalhumanities.mit.edu/" target="_blank" rel="noreferrer">
-                <img className={STYLES.imageLab} src={DH_LOGO} />
-            </a>
+            <a className={`font-weight-bold white-text ${STYLES.linkLab}`} href="https://digitalhumanities.mit.edu/" target="_blank" rel="noreferrer">
+                    DH
+            </a><span className={"font-weight-bold white-text"}> + </span>
+            <a className={`font-weight-bold white-text ${STYLES.linkLab}`} href="https://dusp.mit.edu/">DUSP</a>
         </nav>
     );
 };
