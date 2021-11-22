@@ -15,46 +15,17 @@ const FILTERS_MAJORITY = ["Black", "White", "Asian"];
 export default class CitiesDropdown extends React.Component {
     static propTypes = {
         selectedCity: PropTypes.string,
-        onChange: PropTypes.func
+        onChange: PropTypes.func,
+        town: PropTypes.string,
     };
-    state = {
-        cities: [],
-        typeOfLocale: 'town', // TODO: show radio buttons for city/town choice
-        filterMajority: undefined,
-        radios: FILTERS_MAJORITY.reduce(
-            (options, option) => ({
-                ...options,
-                [option]: false
-
-            })
-        )
+    constructor(props) {
+        super(props);
+        this.state = {
+            cities: [],
+            typeOfLocale: 'town', // TODO: show radio buttons for city/town choice
+            filterMajority: undefined,
+        };
     }
-
-    resetRadios = () => {
-        Object.keys(this.state.radios).forEach(radio => {
-            this.setState(prevState => ({
-                radios: {
-                    ...prevState.radios,
-                    [radio]: false
-                }
-            }));
-        });
-    }
-
-    createRadios = () => {
-        return FILTERS_MAJORITY.map(this.createRadio);
-    }
-
-    createRadio = option => (
-        <div className="input-group-text">
-            <input type={"radio"}
-                   aria-label={"Radio input for majority " + option + "filter"}
-                   key={option}
-                   onChange={this.updateFilter}
-                   value={option}/>
-            &nbsp;Majority {option} population
-        </div>
-    );
 
     changeHandler = (e) => {
         if (typeof this.props.onChange === "function") {

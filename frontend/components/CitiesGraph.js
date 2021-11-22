@@ -2,17 +2,20 @@ import React from "react";
 import Plot from "react-plotly.js";
 import CitiesDropdown from "./CitiesDropdown.js";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 const baseURL = "/evictions/";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-// blue rgb(61, 113, 210)
-// brown rgb(186, 117, 3)
-// green rgb(90, 200, 48)
-// red rgb(212, 30, 33)
-// green2 rgb(44, 170, 115)
+
+/* blue green red green */
 const colors = [[61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
 
 export default class CitiesGraph extends React.Component {
+    static propTypes = {
+        setStats: PropTypes.func,
+        town: PropTypes.string
+    };
+
     state = {
         town: "",
         plotlyTitle: "Evictions in town",
@@ -74,12 +77,17 @@ export default class CitiesGraph extends React.Component {
         this.populateGraph(townObj.value, townObj.label);
     }
     componentDidMount = () => {
-        this.populateGraph('BOSTON', 'Boston');
+        if (this.props.town) {
+            this.populateGraph(this.props.town, this.props.town);
+        } else {
+            this.populateGraph('BOSTON', 'Boston');
+        }
     }
 
     render() {
         return <>
             <CitiesDropdown
+                town={this.props.town}
                 onChange={this.changeHandler}
             />
             <Plot

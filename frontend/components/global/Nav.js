@@ -5,7 +5,7 @@ import DH_LOGO from "../../images/dh_logo.svg";
 const Nav = () => {
 
     return (
-        <nav className="navbar navbar-light bg-light navbar-expand-sm">
+        <nav className="navbar navbar-dark bg-dark navbar-expand-sm">
             <a className={`navbar-brand ${STYLES.linkHome}`} href="/">Eviction dashboard</a>
             <ul className="navbar-nav mr-auto">
                 <li className="nav-item">

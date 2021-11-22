@@ -1,0 +1,43 @@
+.dashboard {
+    display: grid;
+    grid-column-gap: 1em;
+    grid-row-gap: 1em;
+    @media (min-width: 961px) {
+        grid-template-areas: "map stats"
+                             "details cities";
+        grid-template-columns: 50% 50%;
+    }
+    @media (max-width: 960px) {
+        grid-template-areas: "map"
+                             "stats"
+                             "cities"
+                             "details";
+    }
+}
+
+.map {
+    grid-area: map;
+    @media (min-width: 961px) {
+        //min-width: 600px;
+    }
+}
+
+.stats {
+    grid-area: stats;
+    border: 1px solid yellow;
+}
+
+.cities {
+    grid-area: cities;
+    border: 1px solid cornflowerblue;
+}
+
+.details {
+    grid-area: details;
+    border: 1px solid mediumseagreen;
+}
+
+#map {
+    color: red !important;
+    background: pink !important;
+}

@@ -31,6 +31,6 @@ urlpatterns = [
     path('locales/', views.get_locales),
     path(r"eviction/<id>", views.get_eviction_by_id),
     path(r"evictions/<locale>", views.get_evictions),
-    path(r"statistics", views.get_statistics),
+    path(r"statistics/census/<id>", views.get_statistics),
     path("geodata", views.get_geodata),
 ]

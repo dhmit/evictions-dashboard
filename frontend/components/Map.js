@@ -3,7 +3,7 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line
 import PropTypes from 'prop-types';
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
-
+const sourceLayer = "census_tracts_geo-8tw3r3"
 export default class Map extends React.PureComponent {
     static propTypes = {
         setStats: PropTypes.func,
@@ -13,8 +13,8 @@ export default class Map extends React.PureComponent {
         super(props);
 
         this.state = {
-            lng: -71.66,
-            lat: 42,
+            lng: -71.7,
+            lat: 42.1,
             zoom: 7,
             layers: [],
             hoveredStateId: undefined,
@@ -26,7 +26,7 @@ export default class Map extends React.PureComponent {
         const {lng, lat, zoom, layers} = this.state;
         const map = new mapboxgl.Map({
             container: this.mapContainer.current,
-            style: 'mapbox://styles/aizman/ckw5c5ytz033m15oi2z4tzj74',
+            style: 'mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim',
             center: [lng, lat],
             zoom: zoom,
             minZoom: 6,
@@ -37,7 +37,7 @@ export default class Map extends React.PureComponent {
                 'id': 'census-fills',
                 'type': 'fill',
                 'source': 'composite',
-                'source-layer': 'census_tracts_geo-8o5nll',
+                'source-layer': sourceLayer,
                 'layout': {},
                 'paint': {
                     'fill-color': '#ffdc59',
@@ -60,22 +60,30 @@ export default class Map extends React.PureComponent {
         })
         map.on('click', 'census', (e) => {
             const features = map.queryRenderedFeatures(e.point);
-
+            const stats = features[0].properties
             console.log(features[0].properties.id)
             this.props.setStats({
                 locale: {
                     city: "",
-                    town: features[0].properties.ma_town_id
+                    town: stats.ma_town_id
                 },
-                evictions: features[0].properties.evictions,
-                stats: {}
+                evictions: stats.evictions,
+                stats: {
+                    asian_pop: stats.asian_pop,
+                    black_pop: stats.black_pop,
+                    latinx_pop: stats.latinx_pop,
+                    white_pop: stats.white_renters,
+                    under18_pop: stats.under18_pop,
+                    foreign_born: stats.foreign_born,
+                }
             })
             if (e && e.features && e.features.length > 0) {
+                // debugger;
                 if (this.state.hoveredStateId) {
                     map.setFeatureState(
                         {
                             source: 'composite',
-                            sourceLayer: 'census_tracts_geo-8o5nll',
+                            sourceLayer: sourceLayer,
                             id: this.state.hoveredStateId,
                         },
                         {click: false}
@@ -85,7 +93,7 @@ export default class Map extends React.PureComponent {
                 map.setFeatureState(
                     {
                         source: 'composite',
-                        sourceLayer: 'census_tracts_geo-8o5nll',
+                        sourceLayer: sourceLayer,
                         id: this.state.hoveredStateId
                     },
                     {click: true}
@@ -97,14 +105,15 @@ export default class Map extends React.PureComponent {
         // });
     }
 
-    minHeight = {
-        minHeight: "400px"
+    mapStyles = {
+        minHeight: "400px",
+        border: "1px solid pink"
     }
 
     render() {
         return (
             <>
-                <div ref={this.mapContainer} className="map-container" style={this.minHeight}/>
+                <div ref={this.mapContainer} className="map-container" style={this.mapStyles}/>
             </>
         );
     }

@@ -4,21 +4,6 @@
     color: white;
 }
 
-#dashboard {
-    display: grid;
-    background-color: red;
-    grid-column-gap: 1em;
-    grid-row-gap: 1em;
-    grid-template-areas: "map cities";
-    @media (max-width: 960px) {
-        grid-template-areas: "map"
-                             "cities";
-    }
-}
-
-#map {
-    grid-area: map;
-}
 
 #cities {
     grid-area: cities;

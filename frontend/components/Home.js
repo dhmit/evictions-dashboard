@@ -1,6 +1,8 @@
 import React from "react";
 import CitiesGraph from "./CitiesGraph";
-import Map from "./Map.js"
+import Map from "./Map";
+import Stats from "./Stats";
+import STYLES from "./Home.module.scss";
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -22,19 +24,22 @@ export default class Home extends React.Component {
 
     render() {
         return <>
-            <div id={"dashboard"}>
-                <div id={"map"}>
+            <div className={STYLES.dashboard} id={"dashboard"}>
+                <div className={STYLES.map} id={"map"}>
                     <Map setStats={this.setStats.bind(this)}
                     />
-                    {this.state.locale.town &&
-                    <>
-                        <h1>Town: {this.state.locale.town.toLowerCase()}</h1>
-                        <h3>Evictions: {this.state.evictions}</h3>
-                    </>}
                 </div>
-                <div id={"cities"}>
-                    <CitiesGraph/>
+                <div className={STYLES.stats} id={"stats"}>
+                    <Stats locale={this.state.locale}
+                           evictions={this.state.evictions}
+                           stats={this.state.stats}/>
                 </div>
+                <div className={STYLES.cities} id={"cities"}>
+                    <CitiesGraph setStats={this.setStats.bind(this)}
+                                 town={this.state.locale.town}/>
+                </div>
+                <div className={STYLES.details}>
+                    hello</div>
             </div>
         </>;
     }
