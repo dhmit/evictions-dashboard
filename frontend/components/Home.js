@@ -17,10 +17,10 @@ export default class Home extends React.Component {
 
     setStats = (stats) => {
         this.setState({
-            locale: stats.locale,
-            evictions: stats.evictions,
-            stats: stats.stats,
-            tract: stats.tract,
+            locale: stats.locale ? stats.locale : this.state.locale,
+            evictions: stats.evictions ? stats.evictions : this.state.evictions,
+            stats: stats.stats ? stats.stats : this.state.stats,
+            tract: stats.tract ? stats.tract : this.state.tract,
         })
     }
 
@@ -28,8 +28,7 @@ export default class Home extends React.Component {
         return <>
             <div className={STYLES.dashboard} id={"dashboard"}>
                 <div className={STYLES.map} id={"map"}>
-                    <Map setStats={this.setStats.bind(this)}
-                    />
+                    <Map setStats={this.setStats.bind(this)}/>
                 </div>
                 <div className={STYLES.stats} id={"stats"}>
                     <Stats locale={this.state.locale}
@@ -42,7 +41,8 @@ export default class Home extends React.Component {
                                  town={this.state.locale.town}/>
                 </div>
                 <div className={STYLES.details}>
-                    hello</div>
+                    hello
+                </div>
             </div>
         </>;
     }

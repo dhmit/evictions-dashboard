@@ -10,7 +10,29 @@ function formatCities(city) {
     return {value: city, label: city.split("-").join(" ").toUpperCase()};
 }
 
-const FILTERS_MAJORITY = ["Black", "White", "Asian"];
+const customStyles = {
+    menu: (provided, state) => ({
+        ...provided,
+        width: state.selectProps.width,
+        borderBottom: '1px dotted pink',
+        color: 'white',
+        backgroundColor: "gray",
+        padding: 20,
+        borderRadius: 0,
+    }),
+
+    control: (_, {selectProps: {width}}) => ({
+        width: width
+    }),
+
+    singleValue: (provided, state) => {
+        // const opacity = state.isDisabled ? 0.5 : 1;
+        const transition = 'opacity 300ms';
+
+        return {...provided, transition};
+    }
+}
+
 
 export default class CitiesDropdown extends React.Component {
     static propTypes = {
@@ -18,12 +40,12 @@ export default class CitiesDropdown extends React.Component {
         onChange: PropTypes.func,
         town: PropTypes.string,
     };
+
     constructor(props) {
         super(props);
         this.state = {
             cities: [],
             typeOfLocale: 'town', // TODO: show radio buttons for city/town choice
-            filterMajority: undefined,
         };
     }
 
@@ -57,6 +79,7 @@ export default class CitiesDropdown extends React.Component {
     render() {
         return <>
             <Select id={"cities-dropdown"}
+                    styles={customStyles}
                     className={"select"}
                     onChange={this.changeHandler}
                     options={this.state.cities}/>

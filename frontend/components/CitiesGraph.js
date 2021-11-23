@@ -7,18 +7,13 @@ import PropTypes from "prop-types";
 const baseURL = "/evictions/";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-/* blue green red green */
-const colors = [[61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
-
-export default class CitiesGraph extends React.Component {
+const colors = [[255, 166, 166], [255, 49, 49], [61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
+export default class CitiesGraph extends React.PureComponent {
     static propTypes = {
         setStats: PropTypes.func,
         town: PropTypes.string
     };
-
     state = {
-        town: "",
-        plotlyTitle: "Evictions in town",
         plotlyData: [
             {
                 x: [],
@@ -28,16 +23,38 @@ export default class CitiesGraph extends React.Component {
                 marker: {color: "red"}
             },
             {type: "bar", x: [], y: []}
-        ]
+        ],
+        updatedDropdown: false,
+        currentTown: "",
     }
 
-    populateGraph = (town, label) => {
+    componentDidUpdate = () => {
+        console.log("componentDidUpdate")
+        let town = this.state.updatedDropdown ? this.state.currentTown : this.props.town;
+        this.populateGraph(town).then((res) => {
+            this.setState({currentTown: town, updatedDropdown: false})
+
+            console.log("populateGraph after", town)
+        })
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        let shouldIt = nextProps.town !== nextState.currentTown || nextState.updatedDropdown;
+        this.printout("shouldComponentUpdate, props: " + nextProps.town + " state: " + nextState.currentTown + " dropdownUpdate? " + nextState.updatedDropdown, "gray");
+        this.printout("SHOULD IT UPDATE?? " + !shouldIt, "green")
+        return shouldIt
+    }
+
+    populateGraph = (town) => {
         // todo: allow switching between town and city
-        axios.get(`${baseURL}` + town + "?type=town")
+        this.printout("populateGraph " + town, "orange")
+        if (!(town)) return;
+        return axios.get(`${baseURL}` + town + "?type=town")
             .then(res => {
+                this.printout("<< populateGraph after " + town, "orange")
                 const evictions_res = res.data.evictions;
                 this.plotBarChart(evictions_res);
-                this.setState({plotlyTitle: "Evictions in " + label});
+                return evictions_res;
             });
     }
     getPlotlyDataObject = (xVal) => {
@@ -54,6 +71,7 @@ export default class CitiesGraph extends React.Component {
     }
 
     plotBarChart = (evictions) => {
+        console.log('plotBarChart', evictions);
         const plotlyData = [];
         let c = 0;
         for (let year in evictions) {
@@ -69,33 +87,55 @@ export default class CitiesGraph extends React.Component {
         }
         this.setState({plotlyData});
     }
+    printout = (msg, color) => {
+        console.log("%c" + msg, "color:" + color + ";font-weight:bold;")
 
+    }
     changeHandler = (townObj) => {
+        this.printout("changeHandler " + townObj.value, "blue");
+        // if (this.state.currentTown !== townObj.value)
         this.setState({
-            town: townObj
+            updatedDropdown: true,
+            currentTown: townObj.value
         });
-        this.populateGraph(townObj.value, townObj.label);
+        this.props.setStats({
+            locale: {
+                city: "",
+                town: townObj.value
+            },
+
+        })
+        this.populateGraph(townObj.value);
     }
-    componentDidMount = () => {
-        if (this.props.town) {
-            this.populateGraph(this.props.town, this.props.town);
-        } else {
-            this.populateGraph('BOSTON', 'Boston');
-        }
-    }
+    // componentDidMount = (prevProps, prevState) => {
+    //     // if (prevProps.town !== this.props.town) {
+    //     //     console.log('props updated', this.props.town)
+    //     // }
+    //     // let town = this.state.updatedDropdown ? this.state.currentTown : this.props.town;
+    //     this.populateGraph().then((res) => {
+    //         // this.setState({plotlyTitle: "Evictions in " + this.props.town});
+    //         console.log("CitiesGraph, componentDidMount", this.props.town)
+    //     });
+    //     //     if (this.props.town) {
+    //     //     } else {
+    //     //         this.populateGraph('BOSTON', 'Boston');
+    //     //     }
+    // }
 
     render() {
+        // this.populateGraph(this.props.town);
+        // const {town} = this.props.town
         return <>
             <CitiesDropdown
                 town={this.props.town}
+                value={this.props.town}
                 onChange={this.changeHandler}
             />
             <Plot
                 data={this.state.plotlyData}
                 layout={
                     {
-                        title: this.state.plotlyTitle,
-                        margin: {l: 20, r: 0, t: 140, b: 80},
+                        margin: {l: 20, r: 10, t: 140, b: 80},
                         paper_bgcolor: "rgba(0,0,0,0)",
                         plot_bgcolor: "rgba(0,0,0,0)",
                         showgrid: false,
