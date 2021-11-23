@@ -28,7 +28,7 @@ export default class Stats extends React.PureComponent {
     render() {
         return (
             <>
-                <button>Reset map</button>
+                <button className={"btn-transparent"}>Reset map</button>
                 <br/><br/>
                 {this.props.locale.town &&
                 <>
@@ -46,10 +46,10 @@ export default class Stats extends React.PureComponent {
                     <>
                         <h5 className={"red-text"}>Demography</h5>
                         <ul>
-                            <li>Asian: {this.props.stats.asian_pop}</li>
-                            <li>Black: {this.props.stats.black_pop}</li>
-                            <li>Latinx: {this.props.stats.latinx_pop}</li>
-                            <li>White: {this.props.stats.white_pop}</li>
+                            <li><span className={"pink-text"}>Asian:</span> {this.props.stats.asian_pop}</li>
+                            <li><span className={"pink-text"}>Black:</span> {this.props.stats.black_pop}</li>
+                            <li><span className={"pink-text"}>Latinx:</span> {this.props.stats.latinx_pop}</li>
+                            <li><span className={"pink-text"}>White:</span> {this.props.stats.white_pop}</li>
                         </ul>
                     </>}
                 </>}

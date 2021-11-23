@@ -71,7 +71,7 @@ export default class Map extends React.PureComponent {
                     city: "",
                     town: stats.ma_town_id
                 },
-                tract: stats.id,
+                tract: stats.id.toString(),
                 evictions: stats.evictions,
                 stats: {
                     asian_pop: stats.asian_pop,

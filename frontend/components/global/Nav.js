@@ -1,6 +1,5 @@
 import React from "react";
 import STYLES from "./Nav.module.scss";
-import DH_LOGO from "../../images/dh_logo.svg";
 
 const Nav = () => {
 

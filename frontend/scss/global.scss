@@ -29,3 +29,18 @@ li {
 #main-container {
     padding: 1em 2em;
 }
+
+/* buttons */
+.btn-transparent {
+    border: 2px solid $white;
+    color: $white;
+    background: none;
+    &:hover, &:focus {
+        border: 2px solid $pink;
+        color: $pink;
+    }
+    &:active {
+        border: 2px solid $red;
+        color: $red;
+    }
+}
