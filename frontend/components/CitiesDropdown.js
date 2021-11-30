@@ -14,10 +14,9 @@ const customStyles = {
     menu: (provided, state) => ({
         ...provided,
         width: state.selectProps.width,
-        borderBottom: '1px dotted pink',
         color: 'white',
         backgroundColor: "gray",
-        padding: 20,
+        margin: 20,
         borderRadius: 0,
     }),
 
@@ -26,10 +25,10 @@ const customStyles = {
     }),
 
     singleValue: (provided, state) => {
-        // const opacity = state.isDisabled ? 0.5 : 1;
+        const color = 'white';
+        const fontSize = '24px';
         const transition = 'opacity 300ms';
-
-        return {...provided, transition};
+        return {...provided, fontSize, color, transition};
     }
 }
 
@@ -39,27 +38,38 @@ export default class CitiesDropdown extends React.Component {
         selectedCity: PropTypes.string,
         onChange: PropTypes.func,
         town: PropTypes.string,
+        value: PropTypes.string,
     };
 
     constructor(props) {
         super(props);
         this.state = {
             cities: [],
-            typeOfLocale: 'town', // TODO: show radio buttons for city/town choice
+            selectedValue: {},
+            typeOfLocale: 'town',
         };
     }
 
     changeHandler = (e) => {
+        /* Sending update back up to CitiesGraph */
         if (typeof this.props.onChange === "function") {
             this.props.onChange(e);
         }
     }
-    updateFilter = (e) => {
-        this.populateCities(e.target.value);
-    }
 
     componentDidMount() {
         this.populateCities();
+    }
+
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.town && state.selectedValue.value !== props.town) {
+            let selected = state.cities.find(c => c.value === props.town);
+            return {
+                selectedValue: selected,
+            }
+        }
+        return null
     }
 
     populateCities(filter) {
@@ -82,6 +92,7 @@ export default class CitiesDropdown extends React.Component {
                     styles={customStyles}
                     className={"select"}
                     onChange={this.changeHandler}
+                    value={this.state.selectedValue}
                     options={this.state.cities}/>
         </>;
     }
