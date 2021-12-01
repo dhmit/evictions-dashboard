@@ -10,6 +10,13 @@ const stats = {
     zoom: 7,
 }
 let map = undefined;
+const deselectMap = () => {
+    /* Unclick everything */
+    map.removeFeatureState({
+        source: 'composite',
+        sourceLayer: sourceLayer,
+    })
+}
 export default class Map extends React.Component {
     static propTypes = {
         setStats: PropTypes.func,
@@ -53,17 +60,10 @@ export default class Map extends React.Component {
         })
     }
 
-    deselectMap() {
-        /* Unclick everything */
-        map.removeFeatureState({
-            source: 'composite',
-            sourceLayer: sourceLayer,
-        })
-    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (!this.props.town.length) {
-            this.deselectMap();
+            deselectMap();
         }
     }
 
@@ -73,7 +73,8 @@ export default class Map extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.town && props.town !== state.currentTown) {
-
+            /* Unclick everything */
+            deselectMap();
             return {
                 locale: {city: "", town: props.town},
                 currentTown: props.town
@@ -85,10 +86,7 @@ export default class Map extends React.Component {
             });
 
             /* Unclick everything */
-            map.removeFeatureState({
-                source: 'composite',
-                sourceLayer: sourceLayer,
-            })
+            deselectMap();
 
             /* Show highlighted matching census tracts */
             let fullStats = {
@@ -184,11 +182,7 @@ export default class Map extends React.Component {
         /* new census tract selection */
         map.on('click', 'census', (e) => {
             /* clear map first */
-            map.removeFeatureState({
-                source: 'composite',
-                sourceLayer: sourceLayer,
-            });
-
+            deselectMap();
             /* allow selection of entire town on new census tract selection */
             if (this.props.showEntireTown) {
                 this.props.toggleEntireTown();
