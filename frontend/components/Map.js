@@ -47,7 +47,7 @@ export default class Map extends React.Component {
                 city: "",
                 town: ""
             },
-            tract: "",
+            tract: [],
             evictions: 0,
             stats: {
                 asian_pop: 0,
@@ -94,7 +94,7 @@ export default class Map extends React.Component {
                     city: "",
                     town: props.town
                 },
-                tract: "",
+                tract: [],
                 evictions: 0,
                 stats: {
                     asian_pop: 0,
@@ -115,7 +115,7 @@ export default class Map extends React.Component {
                         },
                         {click: true}
                     );
-                    fullStats.tract += feature.properties.id + ", ";
+                    fullStats.tract.push(feature.properties.id);
                     fullStats.evictions += feature.properties.evictions;
                     fullStats.stats.asian_pop += feature.properties.asian_pop;
                     fullStats.stats.black_pop += feature.properties.black_pop;
@@ -126,10 +126,7 @@ export default class Map extends React.Component {
                     return feature
                 }
             });
-
-            // remove the last comma
-            fullStats.tract = fullStats.tract.substring(0, fullStats.tract.length - 2)
-
+            
             if (matched.length) {
                 props.setStats(fullStats);
             }
@@ -200,7 +197,7 @@ export default class Map extends React.Component {
                     city: "",
                     town: stats.ma_town_id
                 },
-                tract: stats.id.toString(),
+                tract: [stats.id.toString()],
                 evictions: stats.evictions,
                 stats: {
                     asian_pop: stats.asian_pop,

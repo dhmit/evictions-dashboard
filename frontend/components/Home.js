@@ -11,12 +11,13 @@ export default class Home extends React.Component {
             locale: {"city": "", "town": ""},
             evictions: 0,
             stats: {},
-            tract: "0",
+            tract: [],
             showEntireTown: false,
         };
     }
 
     setStats = (stats) => {
+        this.clearStats();
         this.setState({
             locale: stats.locale ? stats.locale : this.state.locale,
             evictions: stats.evictions ? stats.evictions : this.state.evictions,
@@ -25,7 +26,7 @@ export default class Home extends React.Component {
         })
     }
     clearStats = () => {
-        this.setStats({
+        this.setState({
             locale: {town: "", city: ""},
             evictions: 0,
             stats: {
@@ -36,9 +37,9 @@ export default class Home extends React.Component {
                 under18_pop: 0,
                 foreign_born: 0,
             },
-            tract: ""
+            tract: []
         })
-            }
+    }
 
     toggleEntireTown = () => {
         this.setState({showEntireTown: !this.state.showEntireTown})

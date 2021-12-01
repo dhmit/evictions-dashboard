@@ -6,7 +6,7 @@ export default class Stats extends React.PureComponent {
         locale: PropTypes.object,
         evictions: PropTypes.number,
         stats: PropTypes.object,
-        tract: PropTypes.string,
+        tract: PropTypes.array,
         setStats: PropTypes.func,
         toggleEntireTown: PropTypes.func,
         showEntireTown: PropTypes.bool,
@@ -55,7 +55,21 @@ export default class Stats extends React.PureComponent {
                         <li><span
                             className={"pink-text"}>Town:</span> {this.capitalize(this.props.locale.town)}
                         </li>
-                        <li><span className={"pink-text"}>Census tract:</span> {this.props.tract}
+                        <li>
+                            {this.props.tract.length < 2 && <>
+                                <span className={"pink-text"}>Census tract:</span>
+                                {this.props.tract}</>
+                            }
+                            {this.props.tract.length >= 2 && <>
+                                <span className={"pink-text"}>Census tracts:</span>
+                                <ul className="list-inline">
+                                    {this.props.tract.map((tract, index) => (
+                                        <li className="list-inline-item" key={index}>
+                                            {tract}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>}
                         </li>
                         <li><span className={"pink-text"}>Evictions:</span> {this.props.evictions}
                         </li>
