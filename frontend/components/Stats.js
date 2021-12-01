@@ -6,15 +6,20 @@ export default class Stats extends React.PureComponent {
         locale: PropTypes.object,
         evictions: PropTypes.number,
         stats: PropTypes.object,
-        tract: PropTypes.string
+        tract: PropTypes.string,
+        setStats: PropTypes.func,
+        toggleEntireTown: PropTypes.func,
+        showEntireTown: PropTypes.bool,
+        clearStats: PropTypes.func,
     };
 
     constructor(props) {
         super(props);
     }
 
-    reset = () => {
-        // TODO: how does this travel to the map component??
+    selectTown = () => {
+        this.props.toggleEntireTown();
+
     }
     capitalize = (str) => {
         let townParts = str.split(" ");
@@ -28,7 +33,20 @@ export default class Stats extends React.PureComponent {
     render() {
         return (
             <>
-                <button className={"btn-transparent"}>Reset map</button>
+                {this.props.locale.town &&
+                <>
+                    <button className={"btn-transparent"}
+                            onClick={this.props.clearStats}>Reset map
+                    </button>
+                    &nbsp;&nbsp;
+                    <button className={"btn-transparent"}
+                            key={this.props.showEntireTown}
+                            disabled={this.props.showEntireTown}
+                            onClick={this.selectTown}>
+                        Select all of {this.props.locale.town}
+                    </button>
+                </>
+                }
                 <br/><br/>
                 {this.props.locale.town &&
                 <>
@@ -46,10 +64,21 @@ export default class Stats extends React.PureComponent {
                     <>
                         <h5 className={"red-text"}>Demography</h5>
                         <ul>
-                            <li><span className={"pink-text"}>Asian:</span> {this.props.stats.asian_pop}</li>
-                            <li><span className={"pink-text"}>Black:</span> {this.props.stats.black_pop}</li>
-                            <li><span className={"pink-text"}>Latinx:</span> {this.props.stats.latinx_pop}</li>
-                            <li><span className={"pink-text"}>White:</span> {this.props.stats.white_pop}</li>
+                            <li><span
+                                className={"pink-text"}>Asian:</span> {this.props.stats.asian_pop}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>Black:</span> {this.props.stats.black_pop}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>Latinx:</span> {this.props.stats.latinx_pop}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>White:</span> {this.props.stats.white_pop}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>Under 18:</span> {this.props.stats.under18_pop}
+                            </li>
                         </ul>
                     </>}
                 </>}

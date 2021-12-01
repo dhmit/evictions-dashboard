@@ -43,4 +43,8 @@ li {
         border: 2px solid $red;
         color: $red;
     }
+    &[disabled] {
+        border: 2px solid gray;
+        color: gray;
+    }
 }

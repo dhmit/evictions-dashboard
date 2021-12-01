@@ -14,7 +14,7 @@ const customStyles = {
     menu: (provided, state) => ({
         ...provided,
         width: state.selectProps.width,
-        color: 'white',
+        color: 'black',
         backgroundColor: "gray",
         margin: 20,
         borderRadius: 0,
@@ -64,9 +64,8 @@ export default class CitiesDropdown extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.town && state.selectedValue.value !== props.town) {
-            let selected = state.cities.find(c => c.value === props.town);
             return {
-                selectedValue: selected,
+                selectedValue: {label: props.town, value: props.town}
             }
         }
         return null

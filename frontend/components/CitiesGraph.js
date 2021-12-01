@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 
 const baseURL = "/evictions/";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
+const log = false
 const colors = [[255, 166, 166], [255, 49, 49], [61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
-export default class CitiesGraph extends React.PureComponent {
+export default class CitiesGraph extends React.Component {
     static propTypes = {
         setStats: PropTypes.func,
         town: PropTypes.string
@@ -29,8 +29,10 @@ export default class CitiesGraph extends React.PureComponent {
     }
 
     componentDidUpdate = () => {
-        console.log("componentDidUpdate")
         let town = this.state.updatedDropdown ? this.state.currentTown : this.props.town;
+
+        // console.log("componentDidUpdate", town)
+        if (!town) return;
         this.populateGraph(town).then((res) => {
             this.setState({currentTown: town, updatedDropdown: false})
 
@@ -71,7 +73,6 @@ export default class CitiesGraph extends React.PureComponent {
     }
 
     plotBarChart = (evictions) => {
-        console.log('plotBarChart', evictions);
         const plotlyData = [];
         let c = 0;
         for (let year in evictions) {
@@ -85,11 +86,12 @@ export default class CitiesGraph extends React.PureComponent {
             plotlyData.push(data);
             c += 1;
         }
+        console.log('setState')
         this.setState({plotlyData});
     }
     printout = (msg, color) => {
-        console.log("%c" + msg, "color:" + color + ";font-weight:bold;")
-
+        if (!(log)) return;
+        console.log("GRAPH %c" + msg, "color:" + color + ";font-weight:bold;")
     }
     changeHandler = (townObj) => {
         this.printout("changeHandler " + townObj.value, "blue");
@@ -103,7 +105,6 @@ export default class CitiesGraph extends React.PureComponent {
                 city: "",
                 town: townObj.value
             },
-
         })
         this.populateGraph(townObj.value);
     }
@@ -135,7 +136,7 @@ export default class CitiesGraph extends React.PureComponent {
                 data={this.state.plotlyData}
                 layout={
                     {
-                        margin: {l: 20, r: 10, t: 140, b: 80},
+                        margin: {l: 20, r: 10, t: 0, b: 80},
                         paper_bgcolor: "rgba(0,0,0,0)",
                         plot_bgcolor: "rgba(0,0,0,0)",
                         showgrid: false,
