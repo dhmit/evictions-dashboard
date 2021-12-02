@@ -34,7 +34,7 @@ export default class CitiesGraph extends React.Component {
 
         if (!town) return;
         this.populateGraph(town).then(() => {
-            this.props.overwriteFromDropdown(false);
+            // this.props.overwriteFromDropdown(false);
             this.setState({currentTown: town, updatedDropdown: false})
         })
     }

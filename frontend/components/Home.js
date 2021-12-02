@@ -67,7 +67,6 @@ export default class Home extends React.Component {
                            clearStats={this.clearStats.bind(this)}
                            showEntireTown={this.state.showEntireTown}
                            setStats={this.setStats.bind(this)}
-                           overwrittenFromDropdown={this.overwrittenFromDropdown}
                            stats={this.state.stats}/>
                 </div>
                 <div className={STYLES.cities} id={"cities"}>
