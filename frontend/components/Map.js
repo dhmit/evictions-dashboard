@@ -9,13 +9,62 @@ const stats = {
     lat: 42.1,
     zoom: 7,
 }
+/* Map related methods that we need to keep outside of component to have access everywhere */
 let map = undefined;
+
 const deselectMap = () => {
     /* Unclick everything */
     map.removeFeatureState({
         source: 'composite',
         sourceLayer: sourceLayer,
     })
+}
+
+const selectTown = (town) => {
+    let features = map.querySourceFeatures('composite', {
+        'sourceLayer': sourceLayer
+    });
+
+    /* Show highlighted matching census tracts */
+    let stats = {
+        locale: {
+            city: "",
+            town: town
+        },
+        tract: [],
+        evictions: 0,
+        stats: {
+            asian_pop: 0,
+            black_pop: 0,
+            latinx_pop: 0,
+            white_pop: 0,
+            under18_pop: 0,
+            foreign_born: 0,
+        }
+    }
+    let matchedFeatures = features.filter((feature) => {
+        if (town === feature.properties.ma_town_id) {
+            map.setFeatureState(
+                {
+                    source: 'composite',
+                    sourceLayer: sourceLayer,
+                    id: feature.id,
+                },
+                {click: true}
+            );
+            stats.tract.push(feature.properties.id);
+            stats.evictions += feature.properties.evictions;
+            stats.stats.asian_pop += feature.properties.asian_pop;
+            stats.stats.black_pop += feature.properties.black_pop;
+            stats.stats.latinx_pop += feature.properties.latinx_pop;
+            stats.stats.white_pop += feature.properties.white_pop;
+            stats.stats.under18_pop += feature.properties.under18_pop;
+            stats.stats.foreign_born += feature.properties.foreign_born;
+            return feature
+        }
+    });
+    return [matchedFeatures, stats];
+
 }
 export default class Map extends React.Component {
     static propTypes = {
@@ -72,72 +121,32 @@ export default class Map extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.town && props.town !== state.currentTown) {
-            /* Unclick everything */
+        if (!map) return null;
+        if (!props.town || !props.town.length) {
             deselectMap();
-            return {
-                locale: {city: "", town: props.town},
-                currentTown: props.town
-            }
+            return null
         }
+
+        /* if we need to show entire town: */
         if (props.showEntireTown && !state.showingEntireTown) {
-            let features = map.querySourceFeatures('composite', {
-                'sourceLayer': sourceLayer
-            });
 
             /* Unclick everything */
             deselectMap();
 
-            /* Show highlighted matching census tracts */
-            let fullStats = {
-                locale: {
-                    city: "",
-                    town: props.town
-                },
-                tract: [],
-                evictions: 0,
-                stats: {
-                    asian_pop: 0,
-                    black_pop: 0,
-                    latinx_pop: 0,
-                    white_pop: 0,
-                    under18_pop: 0,
-                    foreign_born: 0,
-                }
-            }
-            let matched = features.filter((feature) => {
-                if (feature.properties.ma_town_id === props.town) {
-                    map.setFeatureState(
-                        {
-                            source: 'composite',
-                            sourceLayer: sourceLayer,
-                            id: feature.id,
-                        },
-                        {click: true}
-                    );
-                    fullStats.tract.push(feature.properties.id);
-                    fullStats.evictions += feature.properties.evictions;
-                    fullStats.stats.asian_pop += feature.properties.asian_pop;
-                    fullStats.stats.black_pop += feature.properties.black_pop;
-                    fullStats.stats.latinx_pop += feature.properties.latinx_pop;
-                    fullStats.stats.white_pop += feature.properties.white_pop;
-                    fullStats.stats.under18_pop += feature.properties.under18_pop;
-                    fullStats.stats.foreign_born += feature.properties.foreign_born;
-                    return feature
-                }
-            });
-            
+            /* Select town on map, get matched features and stats back */
+            let [matched, fullStats] = selectTown(props.town);
+
             if (matched.length) {
+                /* Send stats up to parent component to alert other components */
                 props.setStats(fullStats);
             }
-
-            return {
-                locale: {city: "", town: props.town},
-                currentTown: props.town,
-                showingEntireTown: true,
-            }
         }
-        return null
+
+        return {
+            locale: {city: "", town: props.town},
+            currentTown: props.town,
+            showingEntireTown: props.showEntireTown,
+        }
     }
 
     componentDidMount() {

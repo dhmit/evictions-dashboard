@@ -10,6 +10,7 @@ export default class Stats extends React.PureComponent {
         setStats: PropTypes.func,
         toggleEntireTown: PropTypes.func,
         showEntireTown: PropTypes.bool,
+        overwrittenFromDropdown: PropTypes.bool,
         clearStats: PropTypes.func,
     };
 
