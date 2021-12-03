@@ -2,6 +2,7 @@ import React from "react";
 import CitiesGraph from "./CitiesGraph";
 import Map from "./Map";
 import Stats from "./Stats";
+import EvictionDetails from "./EvictionDetails";
 import STYLES from "./Home.module.scss";
 
 export default class Home extends React.Component {
@@ -76,7 +77,9 @@ export default class Home extends React.Component {
                                  town={this.state.locale.town}/>
                 </div>
                 <div className={STYLES.details}>
-                    hello
+                    <EvictionDetails
+                        tract={this.state.tract}
+                        town={this.state.locale.town} />
                 </div>
             </div>
         </>;

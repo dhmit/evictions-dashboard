@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.db.models import Count
 from app.models import City, Evictions, CensusBgs, MaTowns, CensusTracts
 from django.db.models.functions import TruncYear, TruncMonth
+from django.core import serializers
 
 
 def index(request):
@@ -94,3 +95,14 @@ def get_geodata(request):
     with open("app/data/towns_geo.json", "r") as f:
         towns = json.load(f)
     return JsonResponse({"census": census_tracts, "towns": towns})
+
+
+def get_eviction_details(request, town):
+    tract = request.GET.get('tract', '')
+    if tract:
+        evictions = Evictions.objects.filter(census_tract_id=tract)
+    else:
+        evictions = Evictions.objects.filter(town=town.upper())
+    evictions = list(evictions.values('case_type', 'census_tract', 'ptf', 'ptf_atty',
+                                           'file_date', 'town_id'))
+    return JsonResponse(evictions, safe=False)

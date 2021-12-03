@@ -1,0 +1,11 @@
+.table {
+    small {
+        padding: 0;
+        background-color: transparent;
+    }
+}
+
+.tableContainer {
+    max-height: 400px;
+    overflow-y: scroll;
+}

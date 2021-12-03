@@ -198,6 +198,7 @@ export default class Map extends React.Component {
             this.clearStats();
 
             const features = map.queryRenderedFeatures(e.point);
+            console.log('map click', features.length, features)
             const stats = features[0].properties;
 
             this.props.setStats({
@@ -218,16 +219,6 @@ export default class Map extends React.Component {
                 }
             });
             if (e && e.features && e.features.length > 0) {
-                if (this.state.clickedStateID) {
-                    map.setFeatureState(
-                        {
-                            source: 'composite',
-                            sourceLayer: sourceLayer,
-                            id: this.state.clickedStateID,
-                        },
-                        {click: false}
-                    );
-                }
                 this.setState({clickedStateID: e.features[0].id});
                 map.setFeatureState(
                     {

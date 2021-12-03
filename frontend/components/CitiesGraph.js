@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 
 const baseURL = "/evictions/";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const log = false
-const colors = [[255, 166, 166], [255, 49, 49], [61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
+const log = true
+const colors = [[255, 255, 255], [255, 255, 255], [255, 166, 166], [255, 49, 49], [61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
 export default class CitiesGraph extends React.Component {
     static propTypes = {
         setStats: PropTypes.func,
@@ -117,17 +117,21 @@ export default class CitiesGraph extends React.Component {
                         paper_bgcolor: "rgba(0,0,0,0)",
                         plot_bgcolor: "rgba(0,0,0,0)",
                         showgrid: false,
+                        showlegend: false,
                         font: {
                             size: 10,
                             color: '#ffffff'
                         },
                         xaxis: {
                             showgrid: false,
-                            showline: false
+                            showline: false,
+                            rangemode: "tozero",
                         },
                         yaxis: {
                             showgrid: false,
-                            showline: false
+                            showline: false,
+                            fixedrange: true,
+                            rangemode: "tozero",
                         }
                     }
                 }
