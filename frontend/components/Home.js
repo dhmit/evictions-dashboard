@@ -9,33 +9,36 @@ export default class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            locale: {"city": "", "town": ""},
-            evictions: 0,
-            stats: {},
+            town: "",
+            stats: {
+                evictions: 0,
+            },
             tract: [],
             showEntireTown: false,
             overwrittenFromDropdown: false,
         };
     }
 
-    setStats = (stats) => {
+    setStats = (obj) => {
         this.clearStats();
+        console.log('HOMEjs setStats', obj)
         this.setState({
-            locale: stats.locale ? stats.locale : this.state.locale,
-            evictions: stats.evictions ? stats.evictions : this.state.evictions,
-            stats: stats.stats ? stats.stats : this.state.stats,
-            tract: stats.tract ? stats.tract : this.state.tract,
+            town: obj.town ? obj.town : this.state.town,
+            tract: obj.tract ? obj.tract : this.state.tract,
+            stats: obj.stats ? obj.stats : this.state.stats,
         })
+        console.log('HOMEjs setStats state, after', this.state)
     }
     clearStats = () => {
         this.setState({
-            locale: {town: "", city: ""},
-            evictions: 0,
             stats: {
-                asian_pop: 0,
-                black_pop: 0,
-                latinx_pop: 0,
-                white_pop: 0,
+                evictions: 0,
+                evictions_per_1000: 0,
+                town_evictions_per_1000: 0,
+                asian_renters: 0,
+                black_renters: 0,
+                latinx_renters: 0,
+                white_renters: 0,
                 under18_pop: 0,
                 foreign_born: 0,
             },
@@ -54,32 +57,31 @@ export default class Home extends React.Component {
         return <>
             <div className={STYLES.dashboard} id={"dashboard"}>
                 <div className={STYLES.map} id={"map"}>
-                    <Map town={this.state.locale.town}
+                    <Map town={this.state.town}
                          showEntireTown={this.state.showEntireTown}
                          toggleEntireTown={this.toggleEntireTown.bind(this)}
                          stats={this.state.stats}
                          setStats={this.setStats.bind(this)}/>
                 </div>
                 <div className={STYLES.stats} id={"stats"}>
-                    <Stats locale={this.state.locale}
-                           evictions={this.state.evictions}
-                           tract={this.state.tract}
-                           toggleEntireTown={this.toggleEntireTown.bind(this)}
+                    <Stats toggleEntireTown={this.toggleEntireTown.bind(this)}
                            clearStats={this.clearStats.bind(this)}
                            showEntireTown={this.state.showEntireTown}
                            setStats={this.setStats.bind(this)}
+                           town={this.state.town}
+                           tract={this.state.tract}
                            stats={this.state.stats}/>
                 </div>
                 <div className={STYLES.cities} id={"cities"}>
                     <CitiesGraph setStats={this.setStats.bind(this)}
                                  overwriteFromDropdown={this.overwriteFromDropdown.bind(this)}
                                  showEntireTown={this.state.showEntireTown}
-                                 town={this.state.locale.town}/>
+                                 town={this.state.town}/>
                 </div>
                 <div className={STYLES.details}>
                     <EvictionDetails
                         tract={this.state.tract}
-                        town={this.state.locale.town} />
+                        town={this.state.town}/>
                 </div>
             </div>
         </>;

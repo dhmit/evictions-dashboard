@@ -77,14 +77,15 @@ def fake_total_pop(census):
     return census.asian_pop + census.black_pop + census.latinx_pop + census.white_pop
 
 
-def get_statistics(request, id):
-    evictions = Evictions.objects.filter(census_tract=id)
-    town = CensusTracts.objects.get(id=id).ma_town
-    # results = list(evictions)
-    count = evictions.count()
+def get_statistics(request, tract_id):
+    tract = CensusTracts.objects.get(id=tract_id)
+    tract_per_1000 = tract.evictions_per_1000()
+    town_per_1000 = tract.ma_town.evictions_per_1000()
+    town = CensusTracts.objects.get(id=tract_id).ma_town
     return JsonResponse({
         'town': town.id,
-        'evictions': count
+        'town_per_1000': town_per_1000,
+        'tract_per_1000': tract_per_1000
     })
 
 
@@ -100,9 +101,9 @@ def get_geodata(request):
 def get_eviction_details(request, town):
     tract = request.GET.get('tract', '')
     if tract:
-        evictions = Evictions.objects.filter(census_tract_id=tract)
+        evictions = Evictions.objects.filter(census_tract_id=tract).order_by('file_date')
     else:
-        evictions = Evictions.objects.filter(town=town.upper())
+        evictions = Evictions.objects.filter(town=town.upper()).order_by('file_date')
     evictions = list(evictions.values('case_type', 'census_tract', 'ptf', 'ptf_atty',
-                                           'file_date', 'town_id'))
+                                      'file_date', 'town_id'))
     return JsonResponse(evictions, safe=False)

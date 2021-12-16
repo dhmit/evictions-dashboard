@@ -3,6 +3,7 @@ import Plot from "react-plotly.js";
 import CitiesDropdown from "./CitiesDropdown.js";
 import axios from "axios";
 import PropTypes from "prop-types";
+import {fixNameCapitalization} from "./global/Helpers.js";
 
 const baseURL = "/evictions/";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -94,10 +95,7 @@ export default class CitiesGraph extends React.Component {
             currentTown: townObj.value
         });
         this.props.setStats({
-            locale: {
-                city: "",
-                town: townObj.value
-            },
+            town: townObj.value
         })
         this.populateGraph(townObj.value);
     }
@@ -118,6 +116,8 @@ export default class CitiesGraph extends React.Component {
                         plot_bgcolor: "rgba(0,0,0,0)",
                         showgrid: false,
                         showlegend: false,
+                        height: 200,
+                        width: 300,
                         font: {
                             size: 10,
                             color: '#ffffff'

@@ -36,7 +36,6 @@
     grid-area: details;
 }
 
-#map {
-    color: red !important;
-    background: pink !important;
+.mapboxgl-ctrl-bottom-right {
+    display: none !important;
 }

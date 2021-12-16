@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import PropTypes from "prop-types";
 import STYLES from './EvictionDetails.module.scss';
+import {fixNameCapitalization} from "./global/Helpers.js";
 
 const baseURL = "/details/";
 
@@ -45,7 +46,7 @@ export default class EvictionDetails extends React.Component {
             </>}
             {this.state.evictions.length > 0 &&
             <>
-                <h5>Eviction details for {this.props.town}</h5>
+                <h5>Eviction details for {fixNameCapitalization(this.props.town)}</h5>
                 <div className={STYLES.tableContainer}>
                     <table className={`${STYLES.table} table table-dark`}>
                         <thead>

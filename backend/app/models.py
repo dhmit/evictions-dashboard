@@ -138,6 +138,19 @@ class CensusTracts(models.Model):
         managed = True
         db_table = 'census_tracts'
 
+    def evictions_per_1000(self, town_type=False):
+        evictions_num = self.evictions_set.count()
+        if town_type:
+            total_evictions_count = Evictions.objects.filter(
+                town__type=self.ma_town.type).count()
+        else:
+            total_evictions_count = Evictions.objects.count()
+        rate = evictions_num * 1000 / total_evictions_count
+        return round(rate, 2)
+
+    # def eviction_per_1000_for_matching_town(self):
+    # evictions_num = self.evictions_set.count()
+
 
 class Docket(models.Model):
     id = models.TextField(primary_key=True, blank=True, null=False)
@@ -212,6 +225,16 @@ class MaTowns(models.Model):
 
     def __str__(self):
         return self.id
+
+    def evictions_per_1000(self, town_type=False):
+        evictions_num = self.evictions_set.count()
+        if town_type:
+            total_evictions_count = Evictions.objects.filter(
+                town__type=self.type).count()
+        else:
+            total_evictions_count = Evictions.objects.count()
+        rate = evictions_num * 1000 / total_evictions_count
+        return round(rate, 2)
 
 
 class MaWardsPrecincts(models.Model):

@@ -3,12 +3,33 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line
 import PropTypes from 'prop-types';
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
-const sourceLayer = "census_tracts_geo-8tw3r3"
+// per 1000 stats
+const sourceLayer = "census_tracts_geo-19k2eu"
+const mapStyle = 'mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam'
+// const sourceLayer = "census_tracts_geo-8tw3r3"
+// const mapStyle = 'mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim'
+// const censusLayer = "census"
+const statsLayer = "stats-per-town"
 const stats = {
     lng: -71.7,
     lat: 42.1,
     zoom: 7,
 }
+const selectionTemplate = {
+    showEntireTown: false,
+    town: "",
+    tract: [],
+    stats: {
+        evictions: 0,
+        asian_renters: 0,
+        black_renters: 0,
+        latinx_renters: 0,
+        white_renters: 0,
+        under18_pop: 0,
+        foreign_born: 0
+    }
+}
+
 /* Map related methods that we need to keep outside of component to have access everywhere */
 let map = undefined;
 
@@ -26,24 +47,9 @@ const selectTown = (town) => {
     });
 
     /* Show highlighted matching census tracts */
-    let stats = {
-        locale: {
-            city: "",
-            town: town
-        },
-        tract: [],
-        evictions: 0,
-        stats: {
-            asian_pop: 0,
-            black_pop: 0,
-            latinx_pop: 0,
-            white_pop: 0,
-            under18_pop: 0,
-            foreign_born: 0,
-        }
-    }
+    let selection = JSON.parse(JSON.stringify(selectionTemplate));
     let matchedFeatures = features.filter((feature) => {
-        if (town === feature.properties.ma_town_id) {
+        if (town === feature.properties.ma_town) {
             map.setFeatureState(
                 {
                     source: 'composite',
@@ -52,20 +58,21 @@ const selectTown = (town) => {
                 },
                 {click: true}
             );
-            stats.tract.push(feature.properties.id);
-            stats.evictions += feature.properties.evictions;
-            stats.stats.asian_pop += feature.properties.asian_pop;
-            stats.stats.black_pop += feature.properties.black_pop;
-            stats.stats.latinx_pop += feature.properties.latinx_pop;
-            stats.stats.white_pop += feature.properties.white_pop;
-            stats.stats.under18_pop += feature.properties.under18_pop;
-            stats.stats.foreign_born += feature.properties.foreign_born;
+            selection.tract.push(feature.properties.id);
+            selection.stats.evictions += feature.properties.evictions;
+            selection.stats.town_evictions_per_1000 = feature.properties.town_type_town_evictions_per_1000;
+            selection.stats.asian_renters += feature.properties.asian_renters;
+            selection.stats.black_renters += feature.properties.black_renters;
+            selection.stats.latinx_renters += feature.properties.latinx_renters;
+            selection.stats.white_renters += feature.properties.white_renters;
+            selection.stats.under18_pop += feature.properties.under18_pop;
+            selection.stats.foreign_born += feature.properties.foreign_born;
             return feature
         }
     });
-    return [matchedFeatures, stats];
-
+    return [matchedFeatures, selection];
 }
+
 export default class Map extends React.Component {
     static propTypes = {
         setStats: PropTypes.func,
@@ -91,24 +98,8 @@ export default class Map extends React.Component {
     }
 
     clearStats = () => {
-        this.props.setStats({
-            locale: {
-                city: "",
-                town: ""
-            },
-            tract: [],
-            evictions: 0,
-            stats: {
-                asian_pop: 0,
-                black_pop: 0,
-                latinx_pop: 0,
-                white_pop: 0,
-                under18_pop: 0,
-                foreign_born: 0,
-            }
-        })
+        this.props.setStats(selectionTemplate)
     }
-
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (!this.props.town.length) {
@@ -129,7 +120,6 @@ export default class Map extends React.Component {
 
         /* if we need to show entire town: */
         if (props.showEntireTown && !state.showingEntireTown) {
-
             /* Unclick everything */
             deselectMap();
 
@@ -143,7 +133,7 @@ export default class Map extends React.Component {
         }
 
         return {
-            locale: {city: "", town: props.town},
+            town: props.town,
             currentTown: props.town,
             showingEntireTown: props.showEntireTown,
         }
@@ -153,7 +143,7 @@ export default class Map extends React.Component {
         const {lng, lat, zoom, layers} = this.state;
         map = new mapboxgl.Map({
             container: this.mapContainer.current,
-            style: 'mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim',
+            style: mapStyle,
             center: [lng, lat],
             zoom: zoom,
             minZoom: 6,
@@ -186,7 +176,8 @@ export default class Map extends React.Component {
             });
         })
         /* new census tract selection */
-        map.on('click', 'census', (e) => {
+        // TODO: figure out the two layers and clicks
+        map.on('click', statsLayer, (e) => {
             /* clear map first */
             deselectMap();
             /* allow selection of entire town on new census tract selection */
@@ -198,26 +189,20 @@ export default class Map extends React.Component {
             this.clearStats();
 
             const features = map.queryRenderedFeatures(e.point);
-            console.log('map click', features.length, features)
-            const stats = features[0].properties;
-
-            this.props.setStats({
-                showEntireTown: false,
-                locale: {
-                    city: "",
-                    town: stats.ma_town_id
-                },
-                tract: [stats.id.toString()],
-                evictions: stats.evictions,
-                stats: {
-                    asian_pop: stats.asian_pop,
-                    black_pop: stats.black_pop,
-                    latinx_pop: stats.latinx_pop,
-                    white_pop: stats.white_renters,
-                    under18_pop: stats.under18_pop,
-                    foreign_born: stats.foreign_born,
+            let selection = JSON.parse(JSON.stringify(selectionTemplate));
+            // selection.tract = []
+            for (let i = 0; i < features.length; i++) {
+                let feature = features[i];
+                if (feature.layer.id === statsLayer) {
+                    selection.stats.evictions = feature.properties.evictions
+                    selection.stats.evictions_per_1000 = feature.properties.tract_evictions_per_1000
+                    selection.stats.town_evictions_per_1000 = feature.properties.town_type_town_evictions_per_1000
+                    selection.town = feature.properties.ma_town
+                    selection.tract.push(feature.properties.id)
                 }
-            });
+            }
+
+            this.props.setStats(selection);
             if (e && e.features && e.features.length > 0) {
                 this.setState({clickedStateID: e.features[0].id});
                 map.setFeatureState(

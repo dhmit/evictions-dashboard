@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import {fixNameCapitalization} from "./global/Helpers.js";
 
 export default class Stats extends React.PureComponent {
     static propTypes = {
-        locale: PropTypes.object,
-        evictions: PropTypes.number,
+        town: PropTypes.string,
         stats: PropTypes.object,
         tract: PropTypes.array,
         setStats: PropTypes.func,
@@ -19,21 +19,12 @@ export default class Stats extends React.PureComponent {
 
     selectTown = () => {
         this.props.toggleEntireTown();
-
-    }
-    capitalize = (str) => {
-        let townParts = str.split(" ");
-        let town = "";
-        for (let i = 0; i < townParts.length; i++) {
-            town += (townParts[i].charAt(0).toUpperCase() + townParts[i].slice(1).toLowerCase()) + " ";
-        }
-        return town;
     }
 
     render() {
         return (
             <>
-                {this.props.locale.town &&
+                {this.props.town &&
                 <>
                     <button className={"btn-transparent"}
                             onClick={this.props.clearStats}>Reset map
@@ -43,21 +34,22 @@ export default class Stats extends React.PureComponent {
                             key={this.props.showEntireTown}
                             disabled={this.props.showEntireTown}
                             onClick={this.selectTown}>
-                        Select all of {this.props.locale.town}
+                        Select all of {fixNameCapitalization(this.props.town)}
                     </button>
                 </>
                 }
                 <br/><br/>
-                {this.props.locale.town &&
+                {this.props.town &&
                 <>
                     <h5 className={"red-text"}>Statistics</h5>
                     <ul>
-                        <li><span
-                            className={"pink-text"}>Town:</span> {this.capitalize(this.props.locale.town)}
+                        <li>
+                            <span
+                                className={"pink-text"}>Town:</span> {fixNameCapitalization(this.props.town)}
                         </li>
                         <li>
                             {this.props.tract.length < 2 && <>
-                                <span className={"pink-text"}>Census tract:</span>
+                                <span className={"pink-text"}>Census tract: </span>
                                 {this.props.tract}</>
                             }
                             {this.props.tract.length >= 2 && <>
@@ -71,24 +63,40 @@ export default class Stats extends React.PureComponent {
                                 </ul>
                             </>}
                         </li>
-                        <li><span className={"pink-text"}>Evictions:</span> {this.props.evictions}
+                        <li>
+                            {!this.props.showEntireTown && <>
+                            <span
+                                className={"pink-text"}>
+                                Tract evictions per 1000: </span> {this.props.stats.evictions_per_1000}
+                            </>
+                            }
+                            {this.props.showEntireTown && <>
+                                 <span
+                                className={"pink-text"}>
+                                Town evictions per 1000: </span> {this.props.stats.town_evictions_per_1000}
+                            </>}
                         </li>
+                        <li>
+                            <span className={"pink-text"}>
+                                Total evictions: </span> {this.props.stats.evictions}
+                        </li>
+
                     </ul>
                     {Object.keys(this.props.stats).length &&
                     <>
-                        <h5 className={"red-text"}>Demography</h5>
+                        <h5 className={"red-text"}>Demography of renters</h5>
                         <ul>
                             <li><span
-                                className={"pink-text"}>Asian:</span> {this.props.stats.asian_pop}
+                                className={"pink-text"}>Asian:</span> {this.props.stats.asian_renters}
                             </li>
                             <li><span
-                                className={"pink-text"}>Black:</span> {this.props.stats.black_pop}
+                                className={"pink-text"}>Black:</span> {this.props.stats.black_renters}
                             </li>
                             <li><span
-                                className={"pink-text"}>Latinx:</span> {this.props.stats.latinx_pop}
+                                className={"pink-text"}>Latinx:</span> {this.props.stats.latinx_renters}
                             </li>
                             <li><span
-                                className={"pink-text"}>White:</span> {this.props.stats.white_pop}
+                                className={"pink-text"}>White:</span> {this.props.stats.white_renters}
                             </li>
                             <li><span
                                 className={"pink-text"}>Under 18:</span> {this.props.stats.under18_pop}
