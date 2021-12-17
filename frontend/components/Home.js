@@ -30,6 +30,9 @@ export default class Home extends React.Component {
         };
     }
 
+    componentDidMount = () => {
+        this.clearStats();
+    }
     setStats = (obj) => {
         this.setState({
             town: obj.town ? obj.town : this.state.town,
