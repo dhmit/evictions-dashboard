@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
+import {fixNameCapitalization} from "./global/Helpers.js";
 
 const baseURL = "/locales";
 
@@ -65,7 +66,7 @@ export default class CitiesDropdown extends React.Component {
     static getDerivedStateFromProps(props, state) {
         if (props.town && state.selectedValue.value !== props.town) {
             return {
-                selectedValue: {label: props.town, value: props.town}
+                selectedValue: {label: fixNameCapitalization(props.town), value: props.town}
             }
         }
         return null
