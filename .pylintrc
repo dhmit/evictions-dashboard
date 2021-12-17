@@ -68,6 +68,8 @@ disable=
     too-few-public-methods,
     unused-argument,
     no-else-return,
+    line-too-long,
+    consider-using-f-string,
     too-many-ancestors,
     consider-using-get,
     chained-comparison,
@@ -75,6 +77,10 @@ disable=
     unnecessary-pass,
     C0103, # variable names too short
     C0114, # missing module docstring
+    C0116, # missing-function-docstring
+    W1514, # unspecified-encoding
+    R0914, # too-many-locals
+
 
 [REPORTS]
 
