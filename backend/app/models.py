@@ -224,7 +224,7 @@ class MaTowns(models.Model):
         db_table = 'ma_towns'
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     def evictions_per_1000(self, town_type=False):
         evictions_num = self.evictions_set.count()

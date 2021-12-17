@@ -1,12 +1,11 @@
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-
 from django.db.models import Count
-from app.models import City, Evictions, CensusBgs, MaTowns, CensusTracts
 from django.db.models.functions import TruncYear, TruncMonth
-from django.core import serializers
 from django.db.models import Sum
+
+from app.models import City, Evictions, CensusTracts
 
 
 def index(request):
@@ -66,8 +65,8 @@ def get_evictions(request, locale=None):
     return JsonResponse({"evictions": formatted})
 
 
-def get_eviction_by_id(request, id):
-    eviction = Evictions.objects.get(id=id)
+def get_eviction_by_id(request, eviction_id):
+    eviction = Evictions.objects.get(id=eviction_id)
     print('eviction', eviction)
 
     return JsonResponse({'id': eviction.id, 'file_date': eviction.file_date})
