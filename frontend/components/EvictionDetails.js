@@ -40,39 +40,40 @@ export default class EvictionDetails extends React.Component {
 
     render() {
         return <>
-
-            {!this.state.evictions.length && <>
-                No eviction data
-            </>}
-            {this.state.evictions.length > 0 &&
-            <>
-                <h5>Eviction details for {fixNameCapitalization(this.props.town)}</h5>
-                <div className={STYLES.tableContainer}>
-                    <table className={`${STYLES.table} table table-dark`}>
-                        <thead>
-                        <tr>
-                            <th>Census Tract</th>
-                            <th>Case Type</th>
-                            <th>Plaintiff</th>
-                            <th>Attorney</th>
-                            <th>File date</th>
-                            <th>Town</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.state.evictions.map((eviction, idx) =>
-                            <tr key={idx}>
-                                <td><small>{eviction.census_tract}</small></td>
-                                <td><small>{eviction.case_type}</small></td>
-                                <td><small>{eviction.ptf}</small></td>
-                                <td><small>{eviction.ptf_atty}</small></td>
-                                <td><small>{eviction.file_date}</small></td>
-                                <td><small>{eviction.town_id}</small></td>
+            {this.state.town && <>
+                {!this.state.evictions.length && <>
+                    No eviction data
+                </>}
+                {this.state.evictions.length > 0 &&
+                <>
+                    <h5>Eviction details for {fixNameCapitalization(this.props.town)}</h5>
+                    <div className={STYLES.tableContainer}>
+                        <table className={`${STYLES.table} table`}>
+                            <thead>
+                            <tr>
+                                <th>Census Tract</th>
+                                <th>Case Type</th>
+                                <th>Plaintiff</th>
+                                <th>Attorney</th>
+                                <th>File date</th>
+                                <th>Town</th>
                             </tr>
-                        )}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                            {this.state.evictions.map((eviction, idx) =>
+                                <tr key={idx}>
+                                    <td><small>{eviction.census_tract}</small></td>
+                                    <td><small>{eviction.case_type}</small></td>
+                                    <td><small>{eviction.ptf}</small></td>
+                                    <td><small>{eviction.ptf_atty}</small></td>
+                                    <td><small>{eviction.file_date}</small></td>
+                                    <td><small>{eviction.town_id}</small></td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+                    </div>
+                </>}
             </>}
         </>
     }
