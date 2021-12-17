@@ -176,7 +176,6 @@ export default class Map extends React.Component {
             });
         })
         /* new census tract selection */
-        // TODO: figure out the two layers and clicks
         map.on('click', statsLayer, (e) => {
             /* clear map first */
             deselectMap();
@@ -194,10 +193,15 @@ export default class Map extends React.Component {
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
                 if (feature.layer.id === statsLayer) {
-                    selection.stats.evictions = feature.properties.evictions
-                    selection.stats.evictions_per_1000 = feature.properties.tract_evictions_per_1000
-                    selection.stats.town_evictions_per_1000 = feature.properties.town_type_town_evictions_per_1000
-                    selection.town = feature.properties.ma_town
+                    selection.stats.evictions = feature.properties.evictions;
+                    selection.stats.evictions_per_1000 = feature.properties.tract_evictions_per_1000;
+                    selection.stats.town_evictions_per_1000 = feature.properties.town_type_town_evictions_per_1000;
+                    selection.stats.asian_renters = feature.properties.asian_renters;
+                    selection.stats.black_renters = feature.properties.black_renters;
+                    selection.stats.latinx_renters = feature.properties.latinx_renters;
+                    selection.stats.white_renters = feature.properties.white_renters;
+                    selection.stats.under18_pop = feature.properties.under18_pop;
+                    selection.town = feature.properties.ma_town;
                     selection.tract.push(feature.properties.id)
                 }
             }

@@ -1,9 +1,20 @@
+import axios from "axios";
 import React from "react";
 import CitiesGraph from "./CitiesGraph";
 import Map from "./Map";
 import Stats from "./Stats";
 import EvictionDetails from "./EvictionDetails";
 import STYLES from "./Home.module.scss";
+
+let totals = {
+    evictions: 0,
+    asian_renters: 0,
+    black_renters: 0,
+    latinx_renters: 0,
+    white_renters: 0,
+    under18_pop: 0,
+    tot_renters: 0,
+};
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -20,30 +31,42 @@ export default class Home extends React.Component {
     }
 
     setStats = (obj) => {
-        this.clearStats();
-        console.log('HOMEjs setStats', obj)
         this.setState({
             town: obj.town ? obj.town : this.state.town,
             tract: obj.tract ? obj.tract : this.state.tract,
             stats: obj.stats ? obj.stats : this.state.stats,
         })
-        console.log('HOMEjs setStats state, after', this.state)
     }
-    clearStats = () => {
-        this.setState({
+
+    setStateTotals = (totals) => {
+        let newState = {
             stats: {
-                evictions: 0,
+                evictions: totals.evictions,
                 evictions_per_1000: 0,
                 town_evictions_per_1000: 0,
-                asian_renters: 0,
-                black_renters: 0,
-                latinx_renters: 0,
-                white_renters: 0,
-                under18_pop: 0,
-                foreign_born: 0,
+                asian_renters: totals.demography.asian_renters,
+                black_renters: totals.demography.black_renters,
+                latinx_renters: totals.demography.latinx_renters,
+                white_renters: totals.demography.white_renters,
+                under18_pop: totals.demography.under18_pop,
             },
-            tract: []
-        })
+            tract: [],
+            town: " ",
+        }
+        this.setStats(newState)
+    }
+    clearStats = () => {
+        totals = localStorage.getItem('totals');
+        if (!totals) {
+            axios.get('/statistics/totals').then((res) => {
+                totals = res.data;
+                localStorage.setItem('totals', JSON.stringify(totals));
+                this.setStateTotals(totals)
+            })
+        } else {
+            totals = JSON.parse(totals);
+            this.setStateTotals(totals)
+        }
     }
 
     toggleEntireTown = () => {

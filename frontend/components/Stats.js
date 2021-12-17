@@ -48,7 +48,7 @@ export default class Stats extends React.PureComponent {
                                 className={"pink-text"}>Town:</span> {fixNameCapitalization(this.props.town)}
                         </li>
                         <li>
-                            {this.props.tract.length < 2 && <>
+                            {this.props.tract.length === 1 && <>
                                 <span className={"pink-text"}>Census tract: </span>
                                 {this.props.tract}</>
                             }
@@ -64,13 +64,13 @@ export default class Stats extends React.PureComponent {
                             </>}
                         </li>
                         <li>
-                            {!this.props.showEntireTown && <>
+                            {!this.props.showEntireTown && this.props.stats.evictions_per_1000 && <>
                             <span
                                 className={"pink-text"}>
                                 Tract evictions per 1000: </span> {this.props.stats.evictions_per_1000}
                             </>
                             }
-                            {this.props.showEntireTown && <>
+                            {this.props.showEntireTown && this.props.stats.town_evictions_per_1000 && <>
                                  <span
                                 className={"pink-text"}>
                                 Town evictions per 1000: </span> {this.props.stats.town_evictions_per_1000}
