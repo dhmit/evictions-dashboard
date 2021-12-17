@@ -15,7 +15,7 @@ const customStyles = {
     menu: (provided, state) => ({
         ...provided,
         width: state.selectProps.width,
-        color: 'black',
+        color: "black",
         backgroundColor: "gray",
         margin: 20,
         borderRadius: 0,
@@ -25,10 +25,10 @@ const customStyles = {
         width: width
     }),
 
-    singleValue: (provided, state) => {
-        const color = 'white';
-        const fontSize = '24px';
-        const transition = 'opacity 300ms';
+    singleValue: (provided) => {
+        const color = "white";
+        const fontSize = "24px";
+        const transition = "opacity 300ms";
         return {...provided, fontSize, color, transition};
     }
 }
@@ -47,7 +47,7 @@ export default class CitiesDropdown extends React.Component {
         this.state = {
             cities: [],
             selectedValue: {},
-            typeOfLocale: 'town',
+            typeOfLocale: "town",
         };
     }
 

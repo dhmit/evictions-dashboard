@@ -71,6 +71,7 @@ disable=
     too-many-ancestors,
     consider-using-get,
     chained-comparison,
+    missing-class-docstring,
     unnecessary-pass,
     C0103, # variable names too short
     C0114, # missing module docstring

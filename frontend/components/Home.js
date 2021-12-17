@@ -59,11 +59,11 @@ export default class Home extends React.Component {
         this.setStats(newState)
     }
     clearStats = () => {
-        totals = localStorage.getItem('totals');
+        totals = localStorage.getItem("totals");
         if (!totals) {
-            axios.get('/statistics/totals').then((res) => {
+            axios.get("/statistics/totals").then((res) => {
                 totals = res.data;
-                localStorage.setItem('totals', JSON.stringify(totals));
+                localStorage.setItem("totals", JSON.stringify(totals));
                 this.setStateTotals(totals)
             })
         } else {

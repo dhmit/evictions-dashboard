@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import PropTypes from "prop-types";
-import STYLES from './EvictionDetails.module.scss';
+import STYLES from "./EvictionDetails.module.scss";
 import {fixNameCapitalization} from "./global/Helpers.js";
 
 const baseURL = "/details/";
@@ -13,7 +13,7 @@ export default class EvictionDetails extends React.Component {
     };
 
     state = {
-        town: '',
+        town: "",
         tract: [],
         evictions: []
     }
@@ -21,8 +21,7 @@ export default class EvictionDetails extends React.Component {
     getEvictionDetails = () => {
         if (!this.props.town || this.props.town === " ") return;
         let url = `${baseURL}` + this.props.town
-        url = this.props.tract.length === 1 ?
-            url + '?tract=' + this.props.tract[0] : url
+        url = this.props.tract.length === 1 ? url + "?tract=" + this.props.tract[0] : url
         axios.get(url).then((res) => {
             this.setState({
                 evictions: res.data,
@@ -32,7 +31,7 @@ export default class EvictionDetails extends React.Component {
         })
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps) {
         if (this.props.town && prevProps.town !== this.props.town || prevProps.tract !== this.props.tract) {
             this.getEvictionDetails();
         }

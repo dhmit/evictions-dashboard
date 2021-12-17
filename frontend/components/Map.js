@@ -1,13 +1,13 @@
 import React from "react";
-import mapboxgl from '!mapbox-gl'; // eslint-disable-line
-import PropTypes from 'prop-types';
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line
+import PropTypes from "prop-types";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 // per 1000 stats
 const sourceLayer = "census_tracts_geo-3g7cax"
-const mapStyle = 'mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam'
+const mapStyle = "mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam"
 // const sourceLayer = "census_tracts_geo-8tw3r3"
-// const mapStyle = 'mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim'
+// const mapStyle = "mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim"
 // const censusLayer = "census"
 const statsLayer = "stats-per-town"
 const stats = {
@@ -36,14 +36,14 @@ let map = undefined;
 const deselectMap = () => {
     /* Unclick everything */
     map.removeFeatureState({
-        source: 'composite',
+        source: "composite",
         sourceLayer: sourceLayer,
     })
 }
 
 const selectTown = (town) => {
-    let features = map.querySourceFeatures('composite', {
-        'sourceLayer': sourceLayer
+    let features = map.querySourceFeatures("composite", {
+        "sourceLayer": sourceLayer
     });
 
     /* Show highlighted matching census tracts */
@@ -52,7 +52,7 @@ const selectTown = (town) => {
         if (town === feature.properties.ma_town) {
             map.setFeatureState(
                 {
-                    source: 'composite',
+                    source: "composite",
                     sourceLayer: sourceLayer,
                     id: feature.id,
                 },
@@ -101,7 +101,7 @@ export default class Map extends React.Component {
         this.props.setStats(selectionTemplate)
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate() {
         if (!this.props.town.length) {
             deselectMap();
         }
@@ -140,7 +140,7 @@ export default class Map extends React.Component {
     }
 
     componentDidMount() {
-        const {lng, lat, zoom, layers} = this.state;
+        const {lng, lat, zoom} = this.state;
         map = new mapboxgl.Map({
             container: this.mapContainer.current,
             style: mapStyle,
@@ -149,18 +149,18 @@ export default class Map extends React.Component {
             minZoom: 6,
             maxZoom: 9
         });
-        map.on('load', () => {
+        map.on("load", () => {
             map.addLayer({
-                'id': 'census-fills',
-                'type': 'fill',
-                'source': 'composite',
-                'source-layer': sourceLayer,
-                'layout': {},
-                'paint': {
-                    'fill-color': 'white',
-                    'fill-opacity': [
-                        'case',
-                        ['boolean', ['feature-state', 'click'], false],
+                "id": "census-fills",
+                "type": "fill",
+                "source": "composite",
+                "source-layer": sourceLayer,
+                "layout": {},
+                "paint": {
+                    "fill-color": "white",
+                    "fill-opacity": [
+                        "case",
+                        ["boolean", ["feature-state", "click"], false],
                         1,
                         0
                     ]
@@ -168,7 +168,7 @@ export default class Map extends React.Component {
             });
         })
         map.addControl(new mapboxgl.NavigationControl());
-        map.on('move', () => {
+        map.on("move", () => {
             this.setState({
                 lng: map.getCenter().lng.toFixed(4),
                 lat: map.getCenter().lat.toFixed(4),
@@ -176,10 +176,10 @@ export default class Map extends React.Component {
             });
         })
         /* new census tract selection */
-        map.on('zoom', statsLayer, (e) => {
+        map.on("zoom", statsLayer, () => {
             deselectMap();
         })
-        map.on('click', statsLayer, (e) => {
+        map.on("click", statsLayer, (e) => {
             /* clear map first */
             deselectMap();
             /* allow selection of entire town on new census tract selection */
@@ -194,7 +194,6 @@ export default class Map extends React.Component {
             let selection = JSON.parse(JSON.stringify(selectionTemplate));
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
-                console.log("clicked on multiple?", feature.id)
                 if (feature.layer.id === statsLayer) {
                     selection.stats.evictions = feature.properties.evictions;
                     selection.stats.evictions_per_1000 = feature.properties.tract_evictions_per_1000;
@@ -211,7 +210,7 @@ export default class Map extends React.Component {
                     this.setState({clickedStateID: selectedTract});
                     map.setFeatureState(
                         {
-                            source: 'composite',
+                            source: "composite",
                             sourceLayer: sourceLayer,
                             id: selectedTract
                         },
