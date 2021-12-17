@@ -19,7 +19,7 @@ export default class EvictionDetails extends React.Component {
     }
 
     getEvictionDetails = () => {
-        if (!this.props.town) return;
+        if (!this.props.town || this.props.town === " ") return;
         let url = `${baseURL}` + this.props.town
         url = this.props.tract.length === 1 ?
             url + '?tract=' + this.props.tract[0] : url

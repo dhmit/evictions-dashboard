@@ -6,6 +6,7 @@ from django.db.models import Count
 from app.models import City, Evictions, CensusBgs, MaTowns, CensusTracts
 from django.db.models.functions import TruncYear, TruncMonth
 from django.core import serializers
+from django.db.models import Sum
 
 
 def index(request):
@@ -33,7 +34,7 @@ def get_locales(request):
     return JsonResponse({"cities": list(locales)})
 
 
-def get_evictions(request, locale):
+def get_evictions(request, locale=None):
     """
     returns per town:
             {"evictions: {year: [list of counts per month}}
@@ -43,8 +44,11 @@ def get_evictions(request, locale):
                 "2021": [0, 4, 5, 9, 3, 4, 9, 5, 9, 1, 0, 0]}}
     """
     type_of_place = request.GET.get('type')
-    evictions = Evictions.objects.filter(town__id=locale) if type_of_place == 'town' else \
-        Evictions.objects.filter(city__id=locale)
+    if locale:
+        evictions = Evictions.objects.filter(town__id=locale) if type_of_place == 'town' else \
+            Evictions.objects.filter(city__id=locale)
+    else:
+        evictions = Evictions.objects.all()
     evictions = evictions.annotate(year=TruncYear('file_date'), month=TruncMonth('file_date'), ) \
         .order_by('file_date__year', 'file_date__month') \
         .values('file_date__year', 'file_date__month') \
@@ -107,3 +111,26 @@ def get_eviction_details(request, town):
     evictions = list(evictions.values('case_type', 'census_tract', 'ptf', 'ptf_atty',
                                       'file_date', 'town_id'))
     return JsonResponse(evictions, safe=False)
+
+
+def get_totals(request):
+    evictions = Evictions.objects.count()
+    demo = CensusTracts.objects.aggregate(Sum('under18_pop'),
+                                          Sum('asian_renters'),
+                                          Sum('black_renters'),
+                                          Sum('latinx_renters'),
+                                          Sum('white_renters'),
+                                          Sum('tot_renters'))
+    demography = {
+        "asian_renters": demo["asian_renters__sum"],
+        "black_renters": demo["black_renters__sum"],
+        "latinx_renters": demo["latinx_renters__sum"],
+        "white_renters": demo["white_renters__sum"],
+        "under18_pop": demo["under18_pop__sum"],
+        "tot_renters": demo["tot_renters__sum"],
+    }
+
+    return JsonResponse({
+        "demography": demography,
+        "evictions": evictions
+    })

@@ -57,7 +57,7 @@ export default class Stats extends React.PureComponent {
                                 <ul className="list-inline">
                                     {this.props.tract.map((tract, index) => (
                                         <li className="list-inline-item" key={index}>
-                                            {tract}
+                                            <small>{tract}</small>
                                         </li>
                                     ))}
                                 </ul>
@@ -67,18 +67,18 @@ export default class Stats extends React.PureComponent {
                             {!this.props.showEntireTown && this.props.stats.evictions_per_1000 && <>
                             <span
                                 className={"pink-text"}>
-                                Tract evictions per 1000: </span> {this.props.stats.evictions_per_1000}
+                                Tract evictions per 1000: </span> {this.props.stats.evictions_per_1000.toLocaleString()}
                             </>
                             }
                             {this.props.showEntireTown && this.props.stats.town_evictions_per_1000 && <>
                                  <span
                                 className={"pink-text"}>
-                                Town evictions per 1000: </span> {this.props.stats.town_evictions_per_1000}
+                                Town evictions per 1000: </span> {this.props.stats.town_evictions_per_1000.toLocaleString()}
                             </>}
                         </li>
                         <li>
                             <span className={"pink-text"}>
-                                Total evictions: </span> {this.props.stats.evictions}
+                                Total evictions: </span> {this.props.stats.evictions.toLocaleString()}
                         </li>
 
                     </ul>
@@ -87,19 +87,24 @@ export default class Stats extends React.PureComponent {
                         <h5 className={"red-text"}>Demography of renters</h5>
                         <ul>
                             <li><span
-                                className={"pink-text"}>Asian:</span> {this.props.stats.asian_renters}
+                                className={"pink-text"}>Asian:</span>
+                                {this.props.stats.asian_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>Black:</span> {this.props.stats.black_renters}
+                                className={"pink-text"}>Black:</span>
+                                {this.props.stats.black_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>Latinx:</span> {this.props.stats.latinx_renters}
+                                className={"pink-text"}>Latinx:</span>
+                                {this.props.stats.latinx_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>White:</span> {this.props.stats.white_renters}
+                                className={"pink-text"}>White:</span>
+                                {this.props.stats.white_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>Under 18:</span> {this.props.stats.under18_pop}
+                                className={"pink-text"}>Under 18:</span>
+                                {this.props.stats.under18_pop.toLocaleString()}
                             </li>
                         </ul>
                     </>}

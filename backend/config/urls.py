@@ -30,8 +30,10 @@ urlpatterns = [
     path('', views.index),
     path('locales/', views.get_locales),
     path(r"eviction/<id>", views.get_eviction_by_id),
+    path(r"evictions/", views.get_evictions),
     path(r"evictions/<locale>", views.get_evictions),
     path(r"details/<town>", views.get_eviction_details),
     path(r"statistics/census/<tract_id>", views.get_statistics),
+    path(r"statistics/totals", views.get_totals),
     path("geodata", views.get_geodata),
 ]

@@ -82,7 +82,7 @@ export default class Home extends React.Component {
     render() {
         return <>
             <div className={STYLES.dashboard} id={"dashboard"}>
-                <div className={STYLES.map} id={"map"}>
+                <div className={`${STYLES.map} p-0` } id={"map"}>
                     <Map town={this.state.town}
                          showEntireTown={this.state.showEntireTown}
                          toggleEntireTown={this.toggleEntireTown.bind(this)}

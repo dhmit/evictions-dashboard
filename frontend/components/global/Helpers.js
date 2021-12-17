@@ -6,4 +6,3 @@ export function fixNameCapitalization(name) {
     }
     return fixedName;
 }
-

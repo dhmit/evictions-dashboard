@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 // per 1000 stats
-const sourceLayer = "census_tracts_geo-19k2eu"
+const sourceLayer = "census_tracts_geo-3g7cax"
 const mapStyle = 'mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam'
 // const sourceLayer = "census_tracts_geo-8tw3r3"
 // const mapStyle = 'mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim'
@@ -86,9 +86,9 @@ export default class Map extends React.Component {
         super(props);
 
         this.state = {
-            lng: -71.7,
-            lat: 42.1,
-            zoom: 7,
+            lng: stats.lng,
+            lat: stats.lat,
+            zoom: stats.zoom,
             layers: [],
             clickedStateID: undefined,
             currentTown: undefined,
@@ -157,7 +157,7 @@ export default class Map extends React.Component {
                 'source-layer': sourceLayer,
                 'layout': {},
                 'paint': {
-                    'fill-color': '#ffdc59',
+                    'fill-color': 'white',
                     'fill-opacity': [
                         'case',
                         ['boolean', ['feature-state', 'click'], false],
@@ -176,6 +176,9 @@ export default class Map extends React.Component {
             });
         })
         /* new census tract selection */
+        map.on('zoom', statsLayer, (e) => {
+            deselectMap();
+        })
         map.on('click', statsLayer, (e) => {
             /* clear map first */
             deselectMap();
@@ -189,9 +192,9 @@ export default class Map extends React.Component {
 
             const features = map.queryRenderedFeatures(e.point);
             let selection = JSON.parse(JSON.stringify(selectionTemplate));
-            // selection.tract = []
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
+                console.log("clicked on multiple?", feature.id)
                 if (feature.layer.id === statsLayer) {
                     selection.stats.evictions = feature.properties.evictions;
                     selection.stats.evictions_per_1000 = feature.properties.tract_evictions_per_1000;
@@ -203,21 +206,20 @@ export default class Map extends React.Component {
                     selection.stats.under18_pop = feature.properties.under18_pop;
                     selection.town = feature.properties.ma_town;
                     selection.tract.push(feature.properties.id)
+                    this.props.setStats(selection);
+                    let selectedTract = feature.id;
+                    this.setState({clickedStateID: selectedTract});
+                    map.setFeatureState(
+                        {
+                            source: 'composite',
+                            sourceLayer: sourceLayer,
+                            id: selectedTract
+                        },
+                        {click: true}
+                    );
                 }
             }
 
-            this.props.setStats(selection);
-            if (e && e.features && e.features.length > 0) {
-                this.setState({clickedStateID: e.features[0].id});
-                map.setFeatureState(
-                    {
-                        source: 'composite',
-                        sourceLayer: sourceLayer,
-                        id: this.state.clickedStateID
-                    },
-                    {click: true}
-                );
-            }
         });
     }
 
