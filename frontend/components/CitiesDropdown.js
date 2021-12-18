@@ -2,78 +2,82 @@ import axios from "axios";
 import React from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
+import {fixNameCapitalization} from "./global/Helpers.js";
 
-const baseURL = "/cities";
+const baseURL = "/locales";
 
 function formatCities(city) {
     // react-select expects {value: something, label: something}
     return {value: city, label: city.split("-").join(" ").toUpperCase()};
 }
 
-const FILTERS_MAJORITY = ["Black", "White", "Asian"];
+const customStyles = {
+    menu: (provided, state) => ({
+        ...provided,
+        width: state.selectProps.width,
+        color: "black",
+        backgroundColor: "gray",
+        margin: 20,
+        borderRadius: 0,
+    }),
+
+    control: (_, {selectProps: {width}}) => ({
+        width: width
+    }),
+
+    singleValue: (provided) => {
+        const color = "white";
+        const fontSize = "24px";
+        const transition = "opacity 300ms";
+        return {...provided, fontSize, color, transition};
+    }
+}
+
 
 export default class CitiesDropdown extends React.Component {
     static propTypes = {
         selectedCity: PropTypes.string,
-        onChange: PropTypes.func
+        onChange: PropTypes.func,
+        town: PropTypes.string,
+        value: PropTypes.string,
     };
-    state = {
-        cities: [],
-        filterMajority: undefined,
-        radios: FILTERS_MAJORITY.reduce(
-            (options, option) => ({
-                ...options,
-                [option]: false
 
-            })
-        )
+    constructor(props) {
+        super(props);
+        this.state = {
+            cities: [],
+            selectedValue: {},
+            typeOfLocale: "town",
+        };
     }
-
-    resetRadios = () => {
-        Object.keys(this.state.radios).forEach(radio => {
-            this.setState(prevState => ({
-                radios: {
-                    ...prevState.radios,
-                    [radio]: false
-                }
-            }));
-        });
-    }
-
-    createRadios = () => {
-        return FILTERS_MAJORITY.map(this.createRadio);
-    }
-
-    createRadio = option => (
-        <div className="input-group-text">
-            <input type={"radio"}
-                   aria-label={"Radio input for majority " + option + "filter"}
-                   key={option}
-                   onChange={this.updateFilter}
-                   value={option}/>
-            &nbsp;Majority {option} population
-        </div>
-    );
 
     changeHandler = (e) => {
+        /* Sending update back up to CitiesGraph */
         if (typeof this.props.onChange === "function") {
             this.props.onChange(e);
         }
-    }
-    updateFilter = (e) => {
-        this.populateCities(e.target.value);
     }
 
     componentDidMount() {
         this.populateCities();
     }
 
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.town && state.selectedValue.value !== props.town) {
+            return {
+                selectedValue: {label: fixNameCapitalization(props.town), value: props.town}
+            }
+        }
+        return null
+    }
+
     populateCities(filter) {
-        let url = baseURL;
+        let url = baseURL + "?type=" + this.state.typeOfLocale;
         if (filter) {
             url += "?filter=" + filter.toLowerCase();
         }
-        console.log("populateCities:",url);
+
         axios.get(`${url}`)
             .then(res => {
                 const cities_res = res.data.cities;
@@ -85,22 +89,11 @@ export default class CitiesDropdown extends React.Component {
     render() {
         return <>
             <Select id={"cities-dropdown"}
-                    className={"select col-6"}
+                    styles={customStyles}
+                    className={"select"}
                     onChange={this.changeHandler}
+                    value={this.state.selectedValue}
                     options={this.state.cities}/>
-
-
-            {/*<div className="input-group mb-3">*/}
-            {/*    <div className="input-group-prepend">*/}
-            {/*        {this.createRadios()}*/}
-            {/*        <div className="input-group-text">*/}
-            {/*            <input type={"button"}*/}
-            {/*                   onClick={this.resetRadios}*/}
-            {/*                   value={"reset"}/>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-        </>
-            ;
+        </>;
     }
 }

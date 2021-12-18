@@ -1,82 +1,114 @@
-import React from "react";
-import Plot from "react-plotly.js";
-import CitiesDropdown from "./CitiesDropdown.js";
 import axios from "axios";
+import React from "react";
+import CitiesGraph from "./CitiesGraph";
+import Map from "./Map";
+import Stats from "./Stats";
+import EvictionDetails from "./EvictionDetails";
+import STYLES from "./Home.module.scss";
 
-const baseURL = "/evictions/";
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+let totals = {
+    evictions: 0,
+    asian_renters: 0,
+    black_renters: 0,
+    latinx_renters: 0,
+    white_renters: 0,
+    under18_pop: 0,
+    tot_renters: 0,
+};
+
 export default class Home extends React.Component {
-    state = {
-        city: "",
-        plotlyTitle: "Evictions in city",
-        plotlyData: [
-            {
-                x: [],
-                y: [],
-                type: "scatter",
-                mode: "lines+markers",
-                marker: {color: "red"}
+    constructor(props) {
+        super(props);
+        this.state = {
+            town: "",
+            stats: {
+                evictions: 0,
             },
-            {type: "bar", x: [], y: []}
-        ]
-
-    }
-    randomRGB = () => {
-        return Math.floor(Math.random() * 256);
-    }
-    getPlotlyDataObject = (xVal) => {
-        return {
-            x: xVal ? xVal : [],
-            y: [],
-            type: "bar",
-            name: "Evictions in 2020",
-            marker: {
-                color: `rgb(${this.randomRGB()},${this.randomRGB()},${this.randomRGB()})`,
-                opacity: 1
-            }
+            tract: [],
+            showEntireTown: false,
+            overwrittenFromDropdown: false,
         };
     }
 
-    plotBarChart = (evictions) => {
-        const plotlyData = [];
-        for (let year in evictions) {
-            let data = this.getPlotlyDataObject(months.slice());
-            for (let month = 0; month < evictions[year].length; month++) {
-                data.x[month] = data.x[month] + " '" + year.slice(2);
-                data.y[month] = evictions[year][month];
-            }
-            data.name = "Evictions in " + year;
-            plotlyData.push(data);
-        }
-        console.log(plotlyData);
-        this.setState({plotlyData});
+    componentDidMount = () => {
+        this.clearStats();
     }
-
-    changeHandler = (cityObj) => {
+    setStats = (obj) => {
         this.setState({
-            city: cityObj
-        });
-        console.log(cityObj);
-        axios.get(`${baseURL}` + cityObj.value)
-            .then(res => {
-                const evictions_res = res.data.evictions;
-                this.plotBarChart(evictions_res);
-                this.setState({plotlyTitle: "Evictions in " + cityObj.label});
-            });
+            town: obj.town ? obj.town : this.state.town,
+            tract: obj.tract ? obj.tract : this.state.tract,
+            stats: obj.stats ? obj.stats : this.state.stats,
+        })
     }
 
+    setStateTotals = (totals) => {
+        let newState = {
+            stats: {
+                evictions: totals.evictions,
+                evictions_per_1000: 0,
+                town_evictions_per_1000: 0,
+                asian_renters: totals.demography.asian_renters,
+                black_renters: totals.demography.black_renters,
+                latinx_renters: totals.demography.latinx_renters,
+                white_renters: totals.demography.white_renters,
+                under18_pop: totals.demography.under18_pop,
+            },
+            tract: [],
+            town: " ",
+        }
+        this.setStats(newState)
+    }
+    clearStats = () => {
+        totals = localStorage.getItem("totals");
+        if (!totals) {
+            axios.get("/statistics/totals").then((res) => {
+                totals = res.data;
+                localStorage.setItem("totals", JSON.stringify(totals));
+                this.setStateTotals(totals)
+            })
+        } else {
+            totals = JSON.parse(totals);
+            this.setStateTotals(totals)
+        }
+    }
+
+    toggleEntireTown = () => {
+        this.setState({showEntireTown: !this.state.showEntireTown})
+    }
+    overwriteFromDropdown = (value) => {
+        this.setState({overwrittenFromDropdown: value, showEntireTown: value})
+    }
 
     render() {
         return <>
-            <div className={"row"}>
-                <CitiesDropdown
-                    onChange={this.changeHandler}
-                />
-
-                <Plot
-                    data={this.state.plotlyData}
-                    layout={{width: 1000, height: 400, title: this.state.plotlyTitle}}
-                />
+            <div className={STYLES.dashboard} id={"dashboard"}>
+                <div className={`${STYLES.map} p-0` } id={"map"}>
+                    <Map town={this.state.town}
+                         showEntireTown={this.state.showEntireTown}
+                         toggleEntireTown={this.toggleEntireTown.bind(this)}
+                         stats={this.state.stats}
+                         setStats={this.setStats.bind(this)}/>
+                </div>
+                <div className={STYLES.stats} id={"stats"}>
+                    <Stats toggleEntireTown={this.toggleEntireTown.bind(this)}
+                           clearStats={this.clearStats.bind(this)}
+                           showEntireTown={this.state.showEntireTown}
+                           setStats={this.setStats.bind(this)}
+                           town={this.state.town}
+                           tract={this.state.tract}
+                           stats={this.state.stats}/>
+                </div>
+                <div className={STYLES.cities} id={"cities"}>
+                    <CitiesGraph setStats={this.setStats.bind(this)}
+                                 overwriteFromDropdown={this.overwriteFromDropdown.bind(this)}
+                                 showEntireTown={this.state.showEntireTown}
+                                 town={this.state.town}/>
+                </div>
+                <div className={STYLES.details}>
+                    <EvictionDetails
+                        tract={this.state.tract}
+                        town={this.state.town}/>
+                </div>
             </div>
         </>;
     }

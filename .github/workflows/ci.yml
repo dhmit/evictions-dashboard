@@ -13,22 +13,6 @@ jobs:
   ##############################################################################
   # Python jobs
   ##############################################################################
-  backend_tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.9'
-          architecture: 'x64'
-      - name: Install Python packages and Ubuntu dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Run Django tests
-        run: |
-          cd backend
-          python manage.py migrate
-          python manage.py test
   python_linters:
     runs-on: ubuntu-latest
     steps:

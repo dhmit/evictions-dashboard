@@ -1,8 +1,3 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
@@ -24,6 +19,8 @@ class Evictions(models.Model):
     city = models.ForeignKey('City', models.SET_NULL, null=True)
     town = models.ForeignKey('MaTowns', blank=True, null=True, on_delete=models.SET_NULL)
     census_bg = models.ForeignKey('CensusBgs', blank=True, null=True, on_delete=models.SET_NULL)
+    census_tract = models.ForeignKey('CensusTracts', blank=True, null=True,
+                                     on_delete=models.SET_NULL)
     close_date = models.DateField(blank=True, null=True)
     # def = defendant
     def_field = models.TextField(db_column='def', blank=True,
@@ -141,6 +138,19 @@ class CensusTracts(models.Model):
         managed = True
         db_table = 'census_tracts'
 
+    def evictions_per_1000(self, town_type=False):
+        evictions_num = self.evictions_set.count()
+        if town_type:
+            total_evictions_count = Evictions.objects.filter(
+                town__type=self.ma_town.type).count()
+        else:
+            total_evictions_count = Evictions.objects.count()
+        rate = evictions_num * 1000 / total_evictions_count
+        return round(rate, 2)
+
+    # def eviction_per_1000_for_matching_town(self):
+    # evictions_num = self.evictions_set.count()
+
 
 class Docket(models.Model):
     id = models.TextField(primary_key=True, blank=True, null=False)
@@ -214,13 +224,25 @@ class MaTowns(models.Model):
         db_table = 'ma_towns'
 
     def __str__(self):
-        return self.id
+        return str(self.id)
+
+    def evictions_per_1000(self, town_type=False):
+        evictions_num = self.evictions_set.count()
+        if town_type:
+            total_evictions_count = Evictions.objects.filter(
+                town__type=self.type).count()
+        else:
+            total_evictions_count = Evictions.objects.count()
+        rate = evictions_num * 1000 / total_evictions_count
+        return round(rate, 2)
 
 
 class MaWardsPrecincts(models.Model):
     id = models.TextField(primary_key=True)
     ward = models.TextField(blank=True, null=True)
+    # electoral precinct
     precinct = models.TextField(blank=True, null=True)
+    # court district
     district = models.TextField(blank=True, null=True)
     pop_2010 = models.FloatField(blank=True, null=True)
     town = models.TextField(blank=True, null=True)

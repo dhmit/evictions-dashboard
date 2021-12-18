@@ -1,19 +1,19 @@
 import React from "react";
 import STYLES from "./Nav.module.scss";
-import DH_LOGO from "../../images/dh_logo.svg";
 
 const Nav = () => {
 
     return (
-        <nav className="navbar navbar-light bg-light navbar-expand-sm">
+        <nav className="navbar navbar-dark bg-dark navbar-expand-sm">
             <a className={`navbar-brand ${STYLES.linkHome}`} href="/">Eviction dashboard</a>
             <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
                 </li>
             </ul>
-            <a className={STYLES.linkLab} href="https://digitalhumanities.mit.edu/" target="_blank" rel="noreferrer">
-                <img className={STYLES.imageLab} src={DH_LOGO} />
-            </a>
+            <a className={`font-weight-bold white-text ${STYLES.linkLab}`} href="https://digitalhumanities.mit.edu/" target="_blank" rel="noreferrer">
+                    DH
+            </a><span className={"font-weight-bold white-text"}> + </span>
+            <a className={`font-weight-bold white-text ${STYLES.linkLab}`} href="https://dusp.mit.edu/">DUSP</a>
         </nav>
     );
 };
