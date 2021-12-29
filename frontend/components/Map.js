@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 // per 1000 stats
-const sourceLayer = "census_tracts_geo-3g7cax"
+const sourceLayer = "census_tracts_geo_updated-fix-85oylk"
 const mapStyle = "mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam"
 // const sourceLayer = "census_tracts_geo-8tw3r3"
 // const mapStyle = "mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim"
@@ -130,6 +130,11 @@ export default class Map extends React.Component {
                 /* Send stats up to parent component to alert other components */
                 props.setStats(fullStats);
             }
+        }
+
+        // messy but: when reset (in Stats.js) is clicked, we're here
+        if (map && state.town && props.town === "Total") {
+            deselectMap();
         }
 
         return {

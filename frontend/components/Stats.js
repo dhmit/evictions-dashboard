@@ -24,12 +24,13 @@ export default class Stats extends React.PureComponent {
     render() {
         return (
             <>
-                {this.props.town &&
+                {this.props.town && this.props.town !== "Total" &&
                 <>
                     <button className={"btn-transparent"}
-                            onClick={this.props.clearStats}>Reset map
+                            onClick={this.props.clearStats}>Reset
                     </button>
                     &nbsp;&nbsp;
+
                     <button className={"btn-transparent"}
                             key={this.props.showEntireTown}
                             disabled={this.props.showEntireTown}
@@ -39,6 +40,7 @@ export default class Stats extends React.PureComponent {
                 </>
                 }
                 <br/><br/>
+
                 {this.props.town &&
                 <>
                     <h5 className={"red-text"}>Statistics</h5>
@@ -64,7 +66,7 @@ export default class Stats extends React.PureComponent {
                             </>}
                         </li>
                         <li>
-                            {!this.props.showEntireTown && this.props.stats.evictions_per_1000 && <>
+                            {!this.props.showEntireTown && this.props.stats.evictions_per_1000 > 0 && <>
                             <span
                                 className={"pink-text"}>
                                 Tract evictions per 1000: </span> {this.props.stats.evictions_per_1000.toLocaleString()}
@@ -72,7 +74,7 @@ export default class Stats extends React.PureComponent {
                             }
                             {this.props.showEntireTown && this.props.stats.town_evictions_per_1000 && <>
                                  <span
-                                className={"pink-text"}>
+                                     className={"pink-text"}>
                                 Town evictions per 1000: </span> {this.props.stats.town_evictions_per_1000.toLocaleString()}
                             </>}
                         </li>
@@ -87,26 +89,27 @@ export default class Stats extends React.PureComponent {
                         <h5 className={"red-text"}>Demography of renters</h5>
                         <ul>
                             <li><span
-                                className={"pink-text"}>Asian:</span>
+                                className={"pink-text"}>Asian:&nbsp;</span>
                                 {this.props.stats.asian_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>Black:</span>
+                                className={"pink-text"}>Black:&nbsp;</span>
                                 {this.props.stats.black_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>Latinx:</span>
+                                className={"pink-text"}>Latinx:&nbsp;</span>
                                 {this.props.stats.latinx_renters.toLocaleString()}
                             </li>
                             <li><span
-                                className={"pink-text"}>White:</span>
+                                className={"pink-text"}>White:&nbsp;</span>
                                 {this.props.stats.white_renters.toLocaleString()}
                             </li>
-                            <li><span
-                                className={"pink-text"}>Under 18:</span>
-                                {this.props.stats.under18_pop.toLocaleString()}
-                            </li>
                         </ul>
+                        <h5 className={"red-text"}>Other demography</h5>
+                        <span
+                                className={"pink-text"}>Under 18:&nbsp;</span>
+                                {this.props.stats.under18_pop.toLocaleString()}
+
                     </>}
                 </>}
             </>

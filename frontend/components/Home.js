@@ -54,12 +54,13 @@ export default class Home extends React.Component {
                 under18_pop: totals.demography.under18_pop,
             },
             tract: [],
-            town: " ",
+            town: "Total",
         }
         this.setStats(newState)
     }
     clearStats = () => {
         totals = localStorage.getItem("totals");
+        this.setState({town: "", showEntireTown: false});
         if (!totals) {
             axios.get("/statistics/totals").then((res) => {
                 totals = res.data;
