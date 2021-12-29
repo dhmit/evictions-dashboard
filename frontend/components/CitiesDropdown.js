@@ -16,7 +16,6 @@ const customStyles = {
         ...provided,
         width: state.selectProps.width,
         color: "black",
-        backgroundColor: "gray",
         margin: 20,
         borderRadius: 0,
     }),
@@ -90,7 +89,7 @@ export default class CitiesDropdown extends React.Component {
         return <>
             <Select id={"cities-dropdown"}
                     styles={customStyles}
-                    className={"select"}
+                    className="select"
                     onChange={this.changeHandler}
                     value={this.state.selectedValue}
                     options={this.state.cities}/>
