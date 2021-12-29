@@ -24,7 +24,7 @@ export default class Stats extends React.PureComponent {
     render() {
         return (
             <>
-                {this.props.town && this.props.town !== 'Total' &&
+                {this.props.town && this.props.town !== "Total" &&
                 <>
                     <button className={"btn-transparent"}
                             onClick={this.props.clearStats}>Reset

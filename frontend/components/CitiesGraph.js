@@ -49,7 +49,7 @@ export default class CitiesGraph extends React.Component {
     populateGraph = (town) => {
         let url = baseURL;
         // fixme: this is silly but town can sometimes be an empty string
-        if (town && town !== 'Total') {
+        if (town && town !== "Total") {
             url = baseURL + town + "?type=town";
         }
         return axios.get(url)

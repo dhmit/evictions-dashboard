@@ -133,7 +133,7 @@ export default class Map extends React.Component {
         }
 
         // messy but: when reset (in Stats.js) is clicked, we're here
-        if (map && state.town && props.town === 'Total') {
+        if (map && state.town && props.town === "Total") {
             deselectMap();
         }
 
