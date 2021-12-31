@@ -32,8 +32,11 @@ const selectionTemplate = {
 
 /* Map related methods that we need to keep outside of component to have access everywhere */
 let map = undefined;
+let mapLoaded = false;
 
 const deselectMap = () => {
+    if (!mapLoaded) return;
+    if (!map) return null;
     /* Unclick everything */
     map.removeFeatureState({
         source: "composite",
@@ -112,7 +115,6 @@ export default class Map extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (!map) return null;
         if (!props.town || !props.town.length) {
             deselectMap();
             return null
@@ -155,6 +157,7 @@ export default class Map extends React.Component {
             maxZoom: 9
         });
         map.on("load", () => {
+            mapLoaded = true;
             map.addLayer({
                 "id": "census-fills",
                 "type": "fill",
