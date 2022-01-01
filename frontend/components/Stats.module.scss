@@ -1,0 +1,23 @@
+.stats-container {
+
+    .btn-group {
+        grid-area: buttons;
+    }
+
+    .main-stats {
+        grid-template-areas: "buttons buttons"
+                             "overview demo"
+                             "other other";
+    }
+
+    .overview {
+        grid-area: overview;
+    }
+
+    .demo {
+        grid-area: demo;
+    }
+}
+
+
+
