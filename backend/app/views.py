@@ -6,6 +6,7 @@ from django.db.models.functions import TruncYear, TruncMonth
 from django.db.models import Sum
 
 from app.models import City, Evictions, CensusTracts
+from app.stats import stats_for_tract, stats_for_tracts, eviction_type_percent
 
 
 def index(request):
@@ -80,16 +81,14 @@ def fake_total_pop(census):
     return census.asian_pop + census.black_pop + census.latinx_pop + census.white_pop
 
 
-def get_statistics(request, tract_id):
-    tract = CensusTracts.objects.get(id=tract_id)
-    tract_per_1000 = tract.evictions_per_1000()
-    town_per_1000 = tract.ma_town.evictions_per_1000()
-    town = CensusTracts.objects.get(id=tract_id).ma_town
-    return JsonResponse({
-        'town': town.id,
-        'town_per_1000': town_per_1000,
-        'tract_per_1000': tract_per_1000
-    })
+def get_stats_for_tracts(request):
+    tracts = request.GET.get("tracts", "").split(",")
+    tracts_stats = stats_for_tracts(tracts)
+    tracts_stats['non_payment%'] = eviction_type_percent(tracts_stats['non_payment'],
+                                                         tracts_stats['evictions_count'])
+    tracts_stats['no_cause%'] = eviction_type_percent(tracts_stats['no_cause'],
+                                                      tracts_stats['evictions_count'])
+    return JsonResponse(tracts_stats)
 
 
 def get_geodata(request):
@@ -112,8 +111,10 @@ def get_eviction_details(request, town):
     return JsonResponse(evictions, safe=False)
 
 
-def get_totals(request):
+def get_stats_totals(request):
     evictions = Evictions.objects.count()
+    no_cause = Evictions.objects.filter(case_type__icontains="No cause").count()
+    non_payment = Evictions.objects.filter(case_type__icontains="Non-payment").count()
     demo = CensusTracts.objects.aggregate(Sum('under18_pop'),
                                           Sum('asian_renters'),
                                           Sum('black_renters'),
@@ -131,5 +132,7 @@ def get_totals(request):
 
     return JsonResponse({
         "demography": demography,
-        "evictions": evictions
+        "evictions": evictions,
+        'no_cause%': eviction_type_percent(no_cause, evictions),
+        'non_payment%': eviction_type_percent(non_payment, evictions),
     })

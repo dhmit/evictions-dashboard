@@ -15,6 +15,8 @@ let totals = {
     under18_pop: 0,
     tot_renters: 0,
 };
+const baseURL = "/statistics";
+const TotalURL = baseURL + "/totals"
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -33,12 +35,33 @@ export default class Home extends React.Component {
     componentDidMount = () => {
         this.clearStats();
     }
+
+    getTractsStats(obj) {
+        return axios.get(baseURL + "?tracts=" + obj.tract.join(","))
+            .then((res) => {
+                obj.stats.non_payment = res.data["non_payment%"]
+                obj.stats.no_cause = res.data["no_cause%"]
+                return obj
+            })
+    }
+
     setStats = (obj) => {
-        this.setState({
-            town: obj.town ? obj.town : this.state.town,
-            tract: obj.tract ? obj.tract : this.state.tract,
-            stats: obj.stats ? obj.stats : this.state.stats,
-        })
+        if (obj.tract && obj.tract.length >= 1) {
+            this.getTractsStats(obj).then((res) => {
+                this.setState({
+                    town: res.town ? res.town : this.state.town,
+                    tract: res.tract ? res.tract : this.state.tract,
+                    stats: res.stats ? res.stats : this.state.stats,
+                })
+            })
+        } else {
+            this.setState({
+                town: obj.town ? obj.town : this.state.town,
+                tract: obj.tract ? obj.tract : this.state.tract,
+                stats: obj.stats ? obj.stats : this.state.stats,
+            })
+        }
+
     }
 
     setStateTotals = (totals) => {
@@ -47,6 +70,8 @@ export default class Home extends React.Component {
                 evictions: totals.evictions,
                 evictions_per_1000: 0,
                 town_evictions_per_1000: 0,
+                no_cause: totals["no_cause%"],
+                non_payment: totals["non_payment%"],
                 asian_renters: totals.demography.asian_renters,
                 black_renters: totals.demography.black_renters,
                 latinx_renters: totals.demography.latinx_renters,
@@ -62,7 +87,7 @@ export default class Home extends React.Component {
         totals = localStorage.getItem("totals");
         this.setState({town: "", showEntireTown: false});
         if (!totals) {
-            axios.get("/statistics/totals").then((res) => {
+            axios.get(TotalURL).then((res) => {
                 totals = res.data;
                 localStorage.setItem("totals", JSON.stringify(totals));
                 this.setStateTotals(totals)
@@ -83,7 +108,7 @@ export default class Home extends React.Component {
     render() {
         return <>
             <div className={STYLES.dashboard} id={"dashboard"}>
-                <div className={`${STYLES.map} p-0` } id={"map"}>
+                <div className={`${STYLES.map} p-0`} id={"map"}>
                     <Map town={this.state.town}
                          showEntireTown={this.state.showEntireTown}
                          toggleEntireTown={this.toggleEntireTown.bind(this)}
