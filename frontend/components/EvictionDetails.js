@@ -54,7 +54,7 @@ export default class EvictionDetails extends React.Component {
                 </>}
                 {this.state.evictions.length > 0 &&
                 <>
-                    <h5>{this.state.title}</h5>
+                    <h6 className="mb-3">{this.state.title}</h6>
                     <div className={STYLES.tableContainer}>
                         <table className={`${STYLES.table} table`}>
                             <thead>

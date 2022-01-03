@@ -1,22 +1,28 @@
-.stats-container {
+.stats {
 
-    .btn-group {
-        grid-area: buttons;
-    }
+}
 
-    .main-stats {
-        grid-template-areas: "buttons buttons"
-                             "overview demo"
-                             "other other";
-    }
+.btn-group {
+    grid-area: buttons;
+}
 
-    .overview {
-        grid-area: overview;
+.main {
+    display: grid;
+    grid-template-areas: "buttons buttons"
+                         "overview demo";
+    @media screen and (max-width: 600px) {
+            grid-template-areas: "buttons buttons"
+                                 "overview overview"
+                                 "demo demo";
     }
+}
 
-    .demo {
-        grid-area: demo;
-    }
+.overview {
+    grid-area: overview;
+}
+
+.demo {
+    grid-area: demo;
 }
 
 

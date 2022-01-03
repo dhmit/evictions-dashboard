@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {fixNameCapitalization} from "./global/Helpers.js";
 import STYLES from "./Stats.module.scss";
 
-export default class Stats extends React.PureComponent {
+export default class Stats extends React.Component {
     static propTypes = {
         town: PropTypes.string,
         stats: PropTypes.object,
@@ -24,9 +24,9 @@ export default class Stats extends React.PureComponent {
 
     render() {
         return (
-            <div className={STYLES.statsContainer}>
+            <>
                 {this.props.town && this.props.town !== "Total" &&
-                <div className={"btn-group mb-3"}>
+                <div className={`${STYLES.btnGroup} mb-3`}>
                     <button className={"btn-transparent"}
                             onClick={this.props.clearStats}>Reset
                     </button>
@@ -43,9 +43,9 @@ export default class Stats extends React.PureComponent {
                 }
 
                 {this.props.town &&
-                <div className={"main-stats"}>
-                    <div className={"overview"}>
-                        <h5 className={"red-text"}>Statistics</h5>
+                <div className={STYLES.main}>
+                    <div className={STYLES.overview}>
+                        <p className={"red-text font-weight-bold mb-0"}>Statistics</p>
                         <ul>
                             <li>
                                 {this.props.town !== "Total" && <span
@@ -84,9 +84,18 @@ export default class Stats extends React.PureComponent {
                             <span className={"pink-text"}>
                                 Total evictions: </span> {this.props.stats.evictions.toLocaleString()}
                             </li>
+                            {this.props.stats.evictions_pct &&
+                            <>
+                                <li>
+                            <span className={"pink-text"}>
+                                Evictions rate: </span>
+
+                                    {this.props.stats.evictions_pct.toLocaleString()}%
+                                </li>
+                            </>}
 
                         </ul>
-                        <h5 className={"red-text"}>Eviction types</h5>
+                        <p className={"red-text font-weight-bold mb-0"}>Eviction types</p>
                         <ul>
                             <li><span className={"pink-text"}>
                             Non-payment of rent:
@@ -102,36 +111,35 @@ export default class Stats extends React.PureComponent {
                     </div>
 
                     {Object.keys(this.props.stats).length &&
-                    <>
-                        <div className={"demo"}>
-                            <h5 className={"red-text"}>Demography of renters</h5>
-                            <ul>
-                                <li><span
-                                    className={"pink-text"}>Asian:&nbsp;</span>
-                                    {this.props.stats.asian_renters.toLocaleString()}
-                                </li>
-                                <li><span
-                                    className={"pink-text"}>Black:&nbsp;</span>
-                                    {this.props.stats.black_renters.toLocaleString()}
-                                </li>
-                                <li><span
-                                    className={"pink-text"}>Latinx:&nbsp;</span>
-                                    {this.props.stats.latinx_renters.toLocaleString()}
-                                </li>
-                                <li><span
-                                    className={"pink-text"}>White:&nbsp;</span>
-                                    {this.props.stats.white_renters.toLocaleString()}
-                                </li>
-                            </ul>
-                            <h5 className={"red-text"}>Other demography</h5>
-                            <span
-                                className={"pink-text"}>Under 18:&nbsp;</span>
-                            {this.props.stats.under18_pop.toLocaleString()}
 
-                        </div>
-                    </>}
-                </div>}
-            </div>
+                    <div className={STYLES.demo}>
+                        <p className={"red-text font-weight-bold mb-0"}>Demography of renters</p>
+                        <ul>
+                            <li><span
+                                className={"pink-text"}>Asian:&nbsp;</span>
+                                {this.props.stats.asian_renters}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>Black:&nbsp;</span>
+                                {this.props.stats.black_renters}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>Latinx:&nbsp;</span>
+                                {this.props.stats.latinx_renters}
+                            </li>
+                            <li><span
+                                className={"pink-text"}>White:&nbsp;</span>
+                                {this.props.stats.white_renters}
+                            </li>
+                        </ul>
+                         <p className={"red-text font-weight-bold mb-0"}>Other demography</p>
+                        <span
+                            className={"pink-text"}>Under 18:&nbsp;</span>
+                        {this.props.stats.under18_pop.toLocaleString()}
+
+                    </div>
+                    }
+                </div>}</>
         );
     }
 }

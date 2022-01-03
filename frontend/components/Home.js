@@ -41,6 +41,14 @@ export default class Home extends React.Component {
             .then((res) => {
                 obj.stats.non_payment = res.data["non_payment%"]
                 obj.stats.no_cause = res.data["no_cause%"]
+                obj.stats.asian_renters = res.data["asian_renters"]
+                obj.stats.black_renters = res.data["black_renters"]
+                obj.stats.latinx_renters = res.data["latinx_renters"]
+                obj.stats.white_renters = res.data["white_renters"]
+                obj.stats.tot_renters = res.data["tot_renters"]
+                obj.stats.evictions = res.data["evictions_count"]
+                obj.stats.evictions_pct = res.data["evictions_pct"]
+                obj.stats.under18_pop = res.data["under18_pop"]
                 return obj
             })
     }
