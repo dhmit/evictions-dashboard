@@ -1,15 +1,22 @@
 import React from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line
 import PropTypes from "prop-types";
+import STYLES from "./Map.module.scss";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 // per 1000 stats
-const sourceLayer = "census_tracts_geo_updated-fix-85oylk"
-const mapStyle = "mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam"
+const sourceLayer = "evictions_per_renter_populati-1756v6";
+// const mapStyle = "mapbox://styles/aizman/ckx4u3o7d3x8f14o7po6noaam"
+const mapStyle = "mapbox://styles/aizman/ckxxsauak3jlc14ph7sxrycix";
+const renterAsianLayer = "rent-pct-asian";
+const renterBlackLayer = "rent-pct-black";
+const renterLatinxLayer = "rent-pct-latinx";
+const renterWhiteLayer = "rent-pct-white";
 // const sourceLayer = "census_tracts_geo-8tw3r3"
 // const mapStyle = "mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim"
 // const censusLayer = "census"
-const statsLayer = "stats-per-town"
+const statsLayer = "evictions"
+
 const stats = {
     lng: -71.7,
     lat: 42.1,
@@ -64,12 +71,6 @@ const selectTown = (town) => {
             selection.tract.push(feature.properties.id);
             selection.stats.evictions += feature.properties.evictions;
             selection.stats.town_evictions_per_1000 = feature.properties.town_type_town_evictions_per_1000;
-            selection.stats.asian_renters += feature.properties.asian_renters;
-            selection.stats.black_renters += feature.properties.black_renters;
-            selection.stats.latinx_renters += feature.properties.latinx_renters;
-            selection.stats.white_renters += feature.properties.white_renters;
-            selection.stats.under18_pop += feature.properties.under18_pop;
-            selection.stats.foreign_born += feature.properties.foreign_born;
             return feature
         }
     });
@@ -96,6 +97,10 @@ export default class Map extends React.Component {
             clickedStateID: undefined,
             currentTown: undefined,
             showingEntireTown: false,
+            showAsianRenters: false,
+            showBlackRenters: false,
+            showLatinxRenters: false,
+            showWhiteRenters: false,
         };
         this.mapContainer = React.createRef();
     }
@@ -158,6 +163,10 @@ export default class Map extends React.Component {
         });
         map.on("load", () => {
             mapLoaded = true;
+            map.setLayoutProperty(renterAsianLayer, 'visibility', 'none');
+            map.setLayoutProperty(renterBlackLayer, 'visibility', 'none');
+            map.setLayoutProperty(renterLatinxLayer, 'visibility', 'none');
+            map.setLayoutProperty(renterWhiteLayer, 'visibility', 'none');
             map.addLayer({
                 "id": "census-fills",
                 "type": "fill",
@@ -187,7 +196,8 @@ export default class Map extends React.Component {
         map.on("zoom", statsLayer, () => {
             deselectMap();
         })
-        map.on("click", statsLayer, (e) => {
+        map.on("click", (e) => {
+
             /* clear map first */
             deselectMap();
             /* allow selection of entire town on new census tract selection */
@@ -199,21 +209,16 @@ export default class Map extends React.Component {
             this.clearStats();
 
             const features = map.queryRenderedFeatures(e.point);
+            console.log('getting features', features)
             let selection = JSON.parse(JSON.stringify(selectionTemplate));
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
                 if (feature.layer.id === statsLayer) {
-                    selection.stats.evictions = feature.properties.evictions;
-                    selection.stats.evictions_per_1000 = feature.properties.tract_evictions_per_1000;
+                    selection.stats.evictions = feature.properties.evictions_count;
+                    selection.stats.evictions_per_1000 = feature.properties.evictions_per_1000.toFixed(2);
                     selection.stats.town_evictions_per_1000 = feature.properties.town_type_town_evictions_per_1000;
-                    selection.stats.asian_renters = feature.properties.asian_renters;
-                    selection.stats.black_renters = feature.properties.black_renters;
-                    selection.stats.latinx_renters = feature.properties.latinx_renters;
-                    selection.stats.white_renters = feature.properties.white_renters;
-                    selection.stats.under18_pop = feature.properties.under18_pop;
                     selection.town = feature.properties.ma_town;
-                    selection.tract.push(feature.properties.id)
-                    this.props.setStats(selection);
+                    selection.tract.push(feature.properties.id);
                     let selectedTract = feature.id;
                     this.setState({clickedStateID: selectedTract});
                     map.setFeatureState(
@@ -226,8 +231,29 @@ export default class Map extends React.Component {
                     );
                 }
             }
-
+            this.props.setStats(selection);
         });
+    }
+
+    toggleDemography = (e) => {
+        let visibility;
+        if (e.target.id === "asian") {
+            visibility = !this.state.showAsianRenters ? 'visible' : 'none';
+            map.setLayoutProperty(renterAsianLayer, 'visibility', visibility);
+            this.setState({showAsianRenters: !this.state.showAsianRenters});
+        } else if (e.target.id === "black") {
+            visibility = !this.state.showBlackRenters ? 'visible' : 'none';
+            map.setLayoutProperty(renterBlackLayer, 'visibility', visibility);
+            this.setState({showBlackRenters: !this.state.showBlackRenters});
+        } else if (e.target.id === "latinx") {
+            visibility = !this.state.showLatinxRenters ? 'visible' : 'none';
+            map.setLayoutProperty(renterLatinxLayer, 'visibility', visibility);
+            this.setState({showLatinxRenters: !this.state.showLatinxRenters});
+        } else if (e.target.id === "white") {
+            visibility = !this.state.showWhiteRenters ? 'visible' : 'none'
+            map.setLayoutProperty(renterWhiteLayer, 'visibility', visibility);
+            this.setState({showWhiteRenters: !this.state.showWhiteRenters});
+        }
     }
 
     reset = () => {
@@ -244,6 +270,18 @@ export default class Map extends React.Component {
     render() {
         return (
             <>
+                <input type={"checkbox"} id="asian" onClick={this.toggleDemography}
+                       className={STYLES.checkbox}/>
+                <label htmlFor="asian">Asian</label>&nbsp;
+                <input type={"checkbox"} id="black" onClick={this.toggleDemography}
+                       className={STYLES.checkbox}/>
+                <label htmlFor="black">Black</label>&nbsp;
+                <input type={"checkbox"} id="latinx" onClick={this.toggleDemography}
+                       className={STYLES.checkbox}/>
+                <label htmlFor="latinx">Latinx</label>&nbsp;
+                <input type={"checkbox"} id="white" onClick={this.toggleDemography}
+                       className={STYLES.checkbox}/>
+                <label htmlFor="white">White</label>&nbsp;
                 <div ref={this.mapContainer} className="map-container" style={this.mapStyles}/>
             </>
         );

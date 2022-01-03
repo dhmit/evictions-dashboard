@@ -15,18 +15,27 @@ export default class EvictionDetails extends React.Component {
     state = {
         town: "",
         tract: [],
-        evictions: []
+        evictions: [],
+        title: "",
     }
 
     getEvictionDetails = () => {
         if (!this.props.town || this.props.town === " ") return;
-        let url = `${baseURL}` + this.props.town
-        url = this.props.tract.length === 1 ? url + "?tract=" + this.props.tract[0] : url
+        let url = `${baseURL}` + this.props.town;
+        let town = fixNameCapitalization(this.props.town);
+        let title = "";
+        if (this.props.tract.length === 1) {
+            url = url + "?tract=" + this.props.tract[0];
+            title = "Eviction details for census tract " + this.props.tract[0] + " in " + town;
+        } else {
+            title = "Eviction details for " + town;
+        }
         axios.get(url).then((res) => {
             this.setState({
                 evictions: res.data,
                 town: this.props.town,
-                tract: this.props.tract
+                tract: this.props.tract,
+                title: title
             })
         })
     }
@@ -45,7 +54,7 @@ export default class EvictionDetails extends React.Component {
                 </>}
                 {this.state.evictions.length > 0 &&
                 <>
-                    <h5>Eviction details for {fixNameCapitalization(this.props.town)}</h5>
+                    <h6 className="mb-3">{this.state.title}</h6>
                     <div className={STYLES.tableContainer}>
                         <table className={`${STYLES.table} table`}>
                             <thead>
