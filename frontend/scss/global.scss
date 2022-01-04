@@ -1,6 +1,7 @@
 body {
     font-family: titillium_webregular, serif !important;
 }
+
 ul {
     padding: 0;
 }
@@ -25,9 +26,27 @@ li {
 .pink-text {
     color: $pink;
 }
+
 .white-text {
     color: $white;
 }
+
+.bg-orange {
+    background-color: #ffa6a6;
+}
+
+.bg-green {
+    background-color: greenyellow;
+}
+
+.bg-pink {
+    background-color: #ff3ca4;
+}
+
+.bg-blue {
+    background-color: #43b2ff;
+}
+
 
 #main-container {
     padding: 1em 2em;
@@ -38,16 +57,24 @@ li {
     border: 2px solid $white;
     color: $white;
     background: none;
+
     &:hover, &:focus {
         border: 2px solid $pink;
         color: $pink;
     }
+
     &:active {
         border: 2px solid $red;
         color: $red;
     }
+
     &[disabled] {
         border: 2px solid gray;
         color: gray;
     }
+}
+
+// sorry
+.mapboxgl-ctrl-logo {
+    display: none !important;
 }

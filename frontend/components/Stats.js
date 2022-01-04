@@ -85,14 +85,14 @@ export default class Stats extends React.Component {
                                 Total evictions: </span> {this.props.stats.evictions.toLocaleString()}
                             </li>
                             {this.props.stats.evictions_pct &&
-                            <>
-                                <li>
+
+                            <li>
                             <span className={"pink-text"}>
                                 Evictions rate: </span>
 
-                                    {this.props.stats.evictions_pct.toLocaleString()}%
-                                </li>
-                            </>}
+                                {this.props.stats.evictions_pct.toLocaleString()}%
+                            </li>
+                            }
 
                         </ul>
                         <p className={"red-text font-weight-bold mb-0"}>Eviction types</p>
@@ -132,7 +132,7 @@ export default class Stats extends React.Component {
                                 {this.props.stats.white_renters}
                             </li>
                         </ul>
-                         <p className={"red-text font-weight-bold mb-0"}>Other demography</p>
+                        <p className={"red-text font-weight-bold mb-0"}>Other demography</p>
                         <span
                             className={"pink-text"}>Under 18:&nbsp;</span>
                         {this.props.stats.under18_pop.toLocaleString()}

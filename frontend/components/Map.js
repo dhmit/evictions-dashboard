@@ -1,7 +1,6 @@
 import React from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line
 import PropTypes from "prop-types";
-import STYLES from "./Map.module.scss";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiYWl6bWFuIiwiYSI6ImNrdnR5ZjdscjBzNWEzMXFpMnoyZmhmd3YifQ.0vz9VhAL2RucshBH07UJsg";
 // per 1000 stats
@@ -270,19 +269,40 @@ export default class Map extends React.Component {
     render() {
         return (
             <>
-                <input type={"checkbox"} id="asian" onClick={this.toggleDemography}
-                       className={STYLES.checkbox}/>
-                <label htmlFor="asian">Asian</label>&nbsp;
-                <input type={"checkbox"} id="black" onClick={this.toggleDemography}
-                       className={STYLES.checkbox}/>
-                <label htmlFor="black">Black</label>&nbsp;
-                <input type={"checkbox"} id="latinx" onClick={this.toggleDemography}
-                       className={STYLES.checkbox}/>
-                <label htmlFor="latinx">Latinx</label>&nbsp;
-                <input type={"checkbox"} id="white" onClick={this.toggleDemography}
-                       className={STYLES.checkbox}/>
-                <label htmlFor="white">White</label>&nbsp;
                 <div ref={this.mapContainer} className="map-container" style={this.mapStyles}/>
+                <div className={"map-key"}>
+                    Show areas with large concentration of populations:
+                    <ul>
+                        <li className={"population key"}>
+                            <button className={"key-box mt-1 mr-1 bg-green"}
+                                    aria-label={"Show large Asian population"}
+                                    id="asian"
+                                    onClick={this.toggleDemography}/>
+                            <span className={"float-left mr-2"}>Asian</span>
+                        </li>
+                        <li className={"population key"}>
+                            <button className={"key-box mt-1 mr-1 bg-pink"}
+                                    aria-label={"Show large Black population"}
+                                    id="black"
+                                    onClick={this.toggleDemography}/>
+                            <span className={"float-left mr-2"}>Black</span>
+                        </li>
+                        <li className={"population key"}>
+                            <button className={"key-box mt-1 mr-1 bg-orange"}
+                                    aria-label={"Show large Latinx population"}
+                                    id="latinx"
+                                    onClick={this.toggleDemography}/>
+                            <span className={"float-left mr-2"}>Latinx</span>
+                        </li>
+                        <li className={"population key"}>
+                            <button className={"key-box mt-1 mr-1 bg-blue"}
+                                    aria-label={"Show large White population"}
+                                    id="white"
+                                    onClick={this.toggleDemography}/>
+                            <span className={"float-left mr-2"}>White</span>
+                        </li>
+                    </ul>
+                </div>
             </>
         );
     }
