@@ -112,6 +112,7 @@ export default class CitiesGraph extends React.Component {
                 value={this.props.town}
                 onChange={this.changeHandler}
             />
+            {this.state.plotlyData && this.state.plotlyData.length > 0 &&
             <Plot
                 data={this.state.plotlyData}
                 layout={
@@ -140,7 +141,10 @@ export default class CitiesGraph extends React.Component {
                         }
                     }
                 }
-            />
+            />}
+            {this.state.plotlyData && this.state.plotlyData.length === 0 &&
+                <>No data</>
+            }
 
         </>
 

@@ -1,0 +1,30 @@
+.map-container {
+    min-height: 400px !important;
+}
+
+.checkbox {
+    border: 0;
+    border-radius: 0;
+    padding: 2em;
+}
+
+.map-key {
+    font-size: 0.9em;
+    color: lightgray;
+}
+
+.key {
+    cursor: pointer;
+    .key-box:hover, .key-box:focus {
+        border: 2px solid $highlight;
+    }
+}
+
+.key-box {
+    outline: none;
+    border: 0;
+    width: 1em;
+    height: 1em;
+    float: left;
+    border-radius: 50%;
+}
