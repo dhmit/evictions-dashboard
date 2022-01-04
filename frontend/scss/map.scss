@@ -16,7 +16,7 @@
 .key {
     cursor: pointer;
     .key-box:hover, .key-box:focus {
-        background-color: $highlight;
+        border: 2px solid $highlight;
     }
 }
 
