@@ -83,19 +83,20 @@ h1 {
     padding: 0.5em;
     grid-template-areas: "legend-content switch"
                          "map-key map-key";
+
     .content {
         grid-area: legend-content;
     }
+
     .form-switch {
         grid-area: switch;
         text-align: right;
     }
+
     .form-check-label {
         display: block;
     }
-    //.form-check-input {
-    //    margin-left: 0.2em;
-    //}
+
     .map-key {
         grid-area: map-key;
     }
