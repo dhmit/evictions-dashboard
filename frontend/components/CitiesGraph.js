@@ -107,6 +107,8 @@ export default class CitiesGraph extends React.Component {
 
     render() {
         return <>
+            <h3>Town-level data</h3>
+            <h4 className={"subtitle"}>Select a town from the dropdown to see overall data</h4>
             <CitiesDropdown
                 town={this.props.town}
                 value={this.props.town}

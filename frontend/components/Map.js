@@ -11,6 +11,8 @@ const renterAsianLayer = "rent-pct-asian";
 const renterBlackLayer = "rent-pct-black";
 const renterLatinxLayer = "rent-pct-latinx";
 const renterWhiteLayer = "rent-pct-white";
+
+const townNames = "town-names"
 // const sourceLayer = "census_tracts_geo-8tw3r3"
 // const mapStyle = "mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim"
 // const censusLayer = "census"
@@ -100,6 +102,7 @@ export default class Map extends React.Component {
             showBlackRenters: false,
             showLatinxRenters: false,
             showWhiteRenters: false,
+            showTownNames: false,
         };
         this.mapContainer = React.createRef();
     }
@@ -162,7 +165,6 @@ export default class Map extends React.Component {
         });
         map.on("load", () => {
             mapLoaded = true;
-            // map.legendControl.addLegend(document.getElementById("legend").innerHTML);
             map.setLayoutProperty(renterAsianLayer, "visibility", "none");
             map.setLayoutProperty(renterBlackLayer, "visibility", "none");
             map.setLayoutProperty(renterLatinxLayer, "visibility", "none");
@@ -211,9 +213,6 @@ export default class Map extends React.Component {
             const features = map.queryRenderedFeatures(e.point);
             console.log("getting features", features)
             let selection = JSON.parse(JSON.stringify(selectionTemplate));
-            if (features.length === 0) {
-                console.log('clicking on nothing');
-            }
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
                 if (feature.layer.id === statsLayer) {
@@ -259,6 +258,12 @@ export default class Map extends React.Component {
         }
     }
 
+    toggleTownNames = () => {
+        let visibility = !this.state.showTownNames ? "visible" : "none";
+        this.setState({showTownNames: !this.state.showTownNames})
+        map.setLayoutProperty(townNames, "visibility", visibility);
+    }
+
     reset = () => {
         this.setState({
             lng: stats.lng,
@@ -279,6 +284,12 @@ export default class Map extends React.Component {
 
                     <div id="legend">
                         <div className="legend">
+                            <div className="form-check form-switch">
+                                <label className="form-check-label"
+                                       htmlFor="flexSwitchCheckDefault">Show town names</label>
+                                <input className="form-check-input" type="checkbox"
+                                       id="flexSwitchCheckDefault" onClick={this.toggleTownNames}/>
+                            </div>
                             <div className="content pt-1 pb-0 pl-1 pr-0">
                                 <h2 className={"float-left legend-title"}>Map Legend</h2>
                                 <br/>

@@ -12,6 +12,10 @@ li {
 }
 
 /* TEXT STYLES */
+.font-weight-semibold {
+    font-family: "titillium_websemibold", sans-serif;
+}
+
 .green-text {
     color: $green;
 }
@@ -22,10 +26,6 @@ li {
 
 .section-header {
     color: $gray-medium;
-}
-
-.pink-text {
-    color: $pink;
 }
 
 .white-text {
@@ -48,6 +48,13 @@ li {
     background-color: #383fff;
 }
 
+h4.subtitle {
+    font-size: 0.8em;
+    margin-bottom: 1em !important;
+    //font-style: italic;
+    font-family: "titillium_weblight_italic", sans-serif;
+    color: $gray-medium;
+}
 
 #main-container {
     padding: 1em 2em;
@@ -58,6 +65,7 @@ li {
 .btn, .btn-outline-light, .btn-sm {
     border-radius: 0 !important;
 }
+
 .btn-transparent {
     border: 0.01em solid $white;
     color: $white;
@@ -80,9 +88,4 @@ li {
         border: 2px solid gray;
         color: gray;
     }
-}
-
-// sorry
-.mapboxgl-ctrl-logo {
-    display: none !important;
 }

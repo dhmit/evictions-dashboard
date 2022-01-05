@@ -59,10 +59,9 @@ export default class EvictionDetails extends React.Component {
                     <h3 className="mb-3">{this.state.title}</h3>
                     <h4 className="subtitle">{this.state.subtitle}</h4>
                     <div className={STYLES.tableContainer}>
-                        <table className={`${STYLES.table} table`}>
+                        <table className={`${STYLES.table} table table-dark`}>
                             <thead>
                             <tr>
-                                <th>Census Tract</th>
                                 <th>Case Type</th>
                                 <th>Plaintiff</th>
                                 <th>Attorney</th>
@@ -73,7 +72,6 @@ export default class EvictionDetails extends React.Component {
                             <tbody>
                             {this.state.evictions.map((eviction, idx) =>
                                 <tr key={idx}>
-                                    <td><small>{eviction.census_tract}</small></td>
                                     <td><small>{eviction.case_type}</small></td>
                                     <td><small>{eviction.ptf}</small></td>
                                     <td><small>{eviction.ptf_atty}</small></td>

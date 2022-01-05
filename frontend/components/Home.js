@@ -134,7 +134,7 @@ export default class Home extends React.Component {
                            stats={this.state.stats}/>
                 </div>
 
-                <div className={STYLES.details}>
+                <div className={STYLES.details} id={"details"}>
                     <EvictionDetails
                         tract={this.state.tract}
                         town={this.state.town}/>
