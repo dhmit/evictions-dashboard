@@ -89,3 +89,22 @@ h4.subtitle {
         color: gray;
     }
 }
+
+.nav-link {
+    font-size: 0.8em;
+}
+
+#about-page {
+    h1, h2 {
+        margin-top: 1em;
+        font-family: titillium_websemibold, sans-serif;
+    }
+
+    h1 {
+        font-size: 1.25em;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
+}

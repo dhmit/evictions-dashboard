@@ -1,3 +1,11 @@
+#map {
+    h1 {
+        font-family: "titillium_webextralight", sans-serif;
+        font-weight: 200;
+        font-size: 1.2em !important;
+    }
+}
+
 .map {
     border: 0.01em solid #565656;
     padding: 0.3em;
@@ -70,12 +78,6 @@
             background-color: #ff9999;
         }
     }
-}
-
-h1 {
-    font-family: "titillium_webextralight", sans-serif;
-    font-weight: 200;
-    font-size: 1.2em !important;
 }
 
 .legend {

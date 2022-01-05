@@ -13,14 +13,28 @@ def index(request):
     """
     Home page
     """
-
     context = {
         'page_metadata': {
-            'title': 'Home page',
+            'title': 'Massachusetts Evictions Dashboard',
+            'description': 'Showing Massachusetts eviction rates between March 2020 and October '
+                           '2021.'
         },
         'component_name': 'Home'
     }
+    return render(request, "index.html", context)
 
+
+def about(request):
+    """
+    About page
+    """
+    context = {
+        'page_metadata': {
+            'title': 'About the Massachusetts Evictions Dashboard',
+        },
+        'component_name': 'About'
+    }
+    print(context)
     return render(request, "index.html", context)
 
 
