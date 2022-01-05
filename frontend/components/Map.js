@@ -291,8 +291,10 @@ export default class Map extends React.Component {
                                        id="flexSwitchCheckDefault" onClick={this.toggleTownNames}/>
                             </div>
                             <div className="content pt-1 pb-0 pl-1 pr-0">
-                                <h2 className={"float-left legend-title"}>Map Legend</h2>
-                                <br/>
+                                <h2 className={"legend-title"}>Map Legend</h2>
+                                <h4 className={"subtitle"}>
+                                    Click on the map to find out more
+                                    location-based information</h4>
                                 <span className={"key-swatch square key-0 pl-2"}/>
                                 <label className={"map-key float-left mr-2"}>0+</label>
                                 <span className={"key-swatch square key-45 pl-2"}/>
