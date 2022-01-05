@@ -1,5 +1,6 @@
 body {
-    font-family: titillium_webregular, serif !important;
+    font-family: titillium_weblight, sans-serif !important;
+    letter-spacing: 0.03em;
 }
 
 ul {
@@ -19,8 +20,8 @@ li {
     color: $blue;
 }
 
-.red-text {
-    color: $red;
+.section-header {
+    color: $gray-medium;
 }
 
 .pink-text {
@@ -31,20 +32,20 @@ li {
     color: $white;
 }
 
-.bg-orange {
-    background-color: #fe9b10;
+.bg-teal {
+    background-color: #2ffef7;
 }
 
 .bg-green {
     background-color: #49ff42;
 }
 
-.bg-pink {
-    background-color: #f41fff;
+.bg-yellow {
+    background-color: #e5ff24;
 }
 
 .bg-blue {
-    background-color: #38a5ff;
+    background-color: #383fff;
 }
 
 
@@ -53,13 +54,20 @@ li {
 }
 
 /* buttons */
+
+.btn, .btn-outline-light, .btn-sm {
+    border-radius: 0 !important;
+}
 .btn-transparent {
-    border: 2px solid $white;
+    border: 0.01em solid $white;
     color: $white;
     background: none;
+    padding: 0.1em 0.2em;
+    font-family: titillium_webextralight, sans-serif;
+
 
     &:hover, &:focus {
-        border: 2px solid $pink;
+        border: 0.01em solid $pink;
         color: $pink;
     }
 

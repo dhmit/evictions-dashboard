@@ -123,6 +123,7 @@ export default class Home extends React.Component {
                          stats={this.state.stats}
                          setStats={this.setStats.bind(this)}/>
                 </div>
+
                 <div className={STYLES.stats} id={"stats"}>
                     <Stats toggleEntireTown={this.toggleEntireTown.bind(this)}
                            clearStats={this.clearStats.bind(this)}
@@ -132,16 +133,17 @@ export default class Home extends React.Component {
                            tract={this.state.tract}
                            stats={this.state.stats}/>
                 </div>
+
+                <div className={STYLES.details}>
+                    <EvictionDetails
+                        tract={this.state.tract}
+                        town={this.state.town}/>
+                </div>
                 <div className={STYLES.cities} id={"cities"}>
                     <CitiesGraph setStats={this.setStats.bind(this)}
                                  overwriteFromDropdown={this.overwriteFromDropdown.bind(this)}
                                  showEntireTown={this.state.showEntireTown}
                                  town={this.state.town}/>
-                </div>
-                <div className={STYLES.details}>
-                    <EvictionDetails
-                        tract={this.state.tract}
-                        town={this.state.town}/>
                 </div>
             </div>
         </>;
