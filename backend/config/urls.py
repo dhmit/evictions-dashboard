@@ -28,6 +28,7 @@ urlpatterns = [
 
     # API endpoints
     path('', views.index),
+    path('about', views.about),
     path('locales/', views.get_locales),
     path(r"eviction/<id>", views.get_eviction_by_id),
     path(r"evictions/", views.get_evictions),

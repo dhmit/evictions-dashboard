@@ -1,5 +1,22 @@
+#map {
+    h1 {
+        font-family: "titillium_webextralight", sans-serif;
+        font-weight: 200;
+        font-size: 1.2em !important;
+    }
+}
+
+.map {
+    border: 0.01em solid #565656;
+    padding: 0.3em;
+}
+
 .map-container {
     min-height: 400px !important;
+}
+
+.map-content {
+    border: 0.01em solid #565656;
 }
 
 .checkbox {
@@ -15,16 +32,89 @@
 
 .key {
     cursor: pointer;
-    .key-box:hover, .key-box:focus {
-        border: 2px solid $highlight;
-    }
+
 }
 
-.key-box {
+.key-swatch {
     outline: none;
     border: 0;
     width: 1em;
     height: 1em;
     float: left;
-    border-radius: 50%;
+
+    &.circle {
+        border-radius: 50%;
+
+        &:hover, &:focus {
+            border: 2px solid $highlight;
+
+        }
+    }
+
+    &.square {
+        margin-right: 0.3em;
+        margin-top: 0.1em;
+        width: 1.4em;
+        height: 1.4em;
+
+        &.key-0 {
+            border: 1px solid #939393;
+            background-color: #1a1b23;
+        }
+
+        &.key-45 {
+            background-color: #bc0101;
+        }
+
+        &.key-90 {
+            background-color: #ff0f0f;
+        }
+
+        &.key-135 {
+            background-color: #fe7358;
+        }
+
+        &.key-170 {
+            background-color: #ff9999;
+        }
+    }
+}
+
+.legend {
+    display: grid;
+    padding: 0.5em;
+    grid-template-areas: "legend-content switch"
+                         "map-key map-key";
+
+    .content {
+        grid-area: legend-content;
+    }
+
+    .form-switch {
+        grid-area: switch;
+        text-align: right;
+    }
+
+    .form-check-label {
+        display: block;
+    }
+
+    .map-key {
+        grid-area: map-key;
+    }
+}
+
+.legend-title {
+    font-size: 0.8em;
+}
+
+.legend label,
+.legend span {
+    font-size: 9px;
+    color: #939393;
+}
+
+// sorry
+.mapboxgl-ctrl-logo {
+    display: none !important;
 }

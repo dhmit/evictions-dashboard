@@ -16,10 +16,17 @@ export default class Stats extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            showAllTracts: false
+        }
     }
 
     selectTown = () => {
         this.props.toggleEntireTown();
+    }
+
+    toggleTracts = () => {
+        this.setState({showAllTracts: !this.state.showAllTracts})
     }
 
     render() {
@@ -27,12 +34,12 @@ export default class Stats extends React.Component {
             <>
                 {this.props.town && this.props.town !== "Total" &&
                 <div className={`${STYLES.btnGroup} mb-3`}>
-                    <button className={"btn-transparent"}
-                            onClick={this.props.clearStats}>Reset
+                    <button className={"btn btn-outline-light btn-sm"}
+                            onClick={this.props.clearStats}>Reset map & stats
                     </button>
                     &nbsp;&nbsp;
 
-                    <button className={"btn-transparent"}
+                    <button className={"btn btn-outline-light btn-sm"}
                             key={this.props.showEntireTown}
                             disabled={this.props.showEntireTown}
                             onClick={this.selectTown}>
@@ -45,19 +52,30 @@ export default class Stats extends React.Component {
                 {this.props.town &&
                 <div className={STYLES.main}>
                     <div className={STYLES.overview}>
-                        <p className={"red-text font-weight-bold mb-0"}>Statistics</p>
+                        <p className={"section-header font-weight-bold mb-0"}>Statistics</p>
                         <ul>
                             <li>
                                 {this.props.town !== "Total" && <span
-                                    className={"pink-text"}>Town:</span>} {fixNameCapitalization(this.props.town)}
+                                    className={"stats-label font-weight-semibold"}>Town:</span>} {fixNameCapitalization(this.props.town)}
                             </li>
+                        </ul>
+                        <ul>
                             <li>
                                 {this.props.tract.length === 1 && <>
-                                    <span className={"pink-text"}>Census tract: </span>
+                                    <span className={"stats-label font-weight-semibold"}>Census tract: </span>
                                     {this.props.tract}</>
                                 }
-                                {this.props.tract.length >= 2 && <>
-                                    <span className={"pink-text"}>Census tracts:</span>
+                                {this.props.tract.length > 1 && <>
+                                    <span className={"stats-label font-weight-semibold"}>Census tracts:
+                                        {this.state.showAllTracts && <>
+                                            <button type="button"
+                                                    className="btn btn-close btn-close-white btn-sm"
+                                                    aria-label="Close"
+                                                    onClick={this.toggleTracts}/>
+                                        </>}
+                                    </span>
+                                </>}
+                                {this.props.tract.length > 1 && this.props.tract.length <= 3 && <>
                                     <ul className="list-inline">
                                         {this.props.tract.map((tract, index) => (
                                             <li className="list-inline-item" key={index}>
@@ -66,28 +84,54 @@ export default class Stats extends React.Component {
                                         ))}
                                     </ul>
                                 </>}
+                                {this.props.tract.length > 3 && <>
+                                    <ul className="list-inline">
+                                        {this.props.tract.slice(0, 3).map((tract, index) => (
+                                            <li className="list-inline-item" key={index}>
+                                                <small>{tract}</small>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    {!this.state.showAllTracts && <>
+                                        <button type="button"
+                                                className="btn btn-outline-light btn-sm"
+                                                onClick={this.toggleTracts}>...
+                                        </button>
+                                    </>
+                                    }
+                                    {this.state.showAllTracts && <>
+                                        <ul className="list-inline">
+                                            {this.props.tract.slice(4).map((tract, index) => (
+                                                <li className="list-inline-item" key={index}>
+                                                    <small>{tract}</small>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>}
+                                </>}
+                                <br/>
                             </li>
                             <li>
                                 {!this.props.showEntireTown && this.props.stats.evictions_per_1000 > 0 && <>
                             <span
-                                className={"pink-text"}>
+                                className={"stats-label font-weight-semibold"}>
                                 Tract evictions per 1000: </span> {this.props.stats.evictions_per_1000.toLocaleString()}
                                 </>
                                 }
                                 {this.props.showEntireTown && this.props.stats.town_evictions_per_1000 && <>
                                  <span
-                                     className={"pink-text"}>
+                                     className={"stats-label font-weight-semibold"}>
                                 Town evictions per 1000: </span> {this.props.stats.town_evictions_per_1000.toLocaleString()}
                                 </>}
                             </li>
                             <li>
-                            <span className={"pink-text"}>
+                            <span className={"stats-label font-weight-semibold"}>
                                 Total evictions: </span> {this.props.stats.evictions.toLocaleString()}
                             </li>
-                            {this.props.stats.evictions_pct &&
+                            {this.props.stats.evictions_pct > 0 &&
 
                             <li>
-                            <span className={"pink-text"}>
+                            <span className={"stats-label font-weight-semibold"}>
                                 Evictions rate: </span>
 
                                 {this.props.stats.evictions_pct.toLocaleString()}%
@@ -95,14 +139,14 @@ export default class Stats extends React.Component {
                             }
 
                         </ul>
-                        <p className={"red-text font-weight-bold mb-0"}>Eviction types</p>
+                        <p className={"section-header font-weight-bold mb-0"}>Eviction types</p>
                         <ul>
-                            <li><span className={"pink-text"}>
+                            <li><span className={"stats-label font-weight-semibold"}>
                             Non-payment of rent:
                         </span>&nbsp;
                                 {this.props.stats.non_payment}%
                             </li>
-                            <li><span className={"pink-text"}>
+                            <li><span className={"stats-label font-weight-semibold"}>
                             No cause:
                         </span>&nbsp;
                                 {this.props.stats.no_cause}%
@@ -113,29 +157,29 @@ export default class Stats extends React.Component {
                     {Object.keys(this.props.stats).length &&
 
                     <div className={STYLES.demo}>
-                        <p className={"red-text font-weight-bold mb-0"}>Renter statistics</p>
+                        <p className={"section-header font-weight-bold mb-0"}>Renter statistics</p>
                         <ul>
                             <li><span
-                                className={"pink-text"}>Asian:&nbsp;</span>
+                                className={"stats-label font-weight-semibold"}>Asian:&nbsp;</span>
                                 {this.props.stats.asian_renters}
                             </li>
                             <li><span
-                                className={"pink-text"}>Black:&nbsp;</span>
+                                className={"stats-label font-weight-semibold"}>Black:&nbsp;</span>
                                 {this.props.stats.black_renters}
                             </li>
                             <li><span
-                                className={"pink-text"}>Latinx:&nbsp;</span>
+                                className={"stats-label font-weight-semibold"}>Latinx:&nbsp;</span>
                                 {this.props.stats.latinx_renters}
                             </li>
                             <li><span
-                                className={"pink-text"}>White:&nbsp;</span>
+                                className={"stats-label font-weight-semibold"}>White:&nbsp;</span>
                                 {this.props.stats.white_renters}
                             </li>
                         </ul>
-                        <p className={"red-text font-weight-bold mb-0"}>Overall population
+                        <p className={"section-header font-weight-bold mb-0"}>Overall population
                             statistics</p>
                         <span
-                            className={"pink-text"}>Under 18:&nbsp;</span>
+                            className={"stats-label font-weight-semibold"}>Under 18:&nbsp;</span>
                         {this.props.stats.under18_pop.toLocaleString()}
 
                     </div>

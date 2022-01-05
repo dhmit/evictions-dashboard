@@ -11,6 +11,8 @@ const renterAsianLayer = "rent-pct-asian";
 const renterBlackLayer = "rent-pct-black";
 const renterLatinxLayer = "rent-pct-latinx";
 const renterWhiteLayer = "rent-pct-white";
+
+const townNames = "town-names"
 // const sourceLayer = "census_tracts_geo-8tw3r3"
 // const mapStyle = "mapbox://styles/aizman/ckw5r50zy0m3t14oz7h5cdwim"
 // const censusLayer = "census"
@@ -100,6 +102,7 @@ export default class Map extends React.Component {
             showBlackRenters: false,
             showLatinxRenters: false,
             showWhiteRenters: false,
+            showTownNames: false,
         };
         this.mapContainer = React.createRef();
     }
@@ -138,7 +141,7 @@ export default class Map extends React.Component {
             }
         }
 
-        // messy but: when reset (in Stats.js) is clicked, we're here
+        // messy but: when reset (in Stats.js) is clicked, we"re here
         if (map && state.town && props.town === "Total") {
             deselectMap();
         }
@@ -158,14 +161,14 @@ export default class Map extends React.Component {
             center: [lng, lat],
             zoom: zoom,
             minZoom: 6,
-            maxZoom: 9
+            maxZoom: 10
         });
         map.on("load", () => {
             mapLoaded = true;
-            map.setLayoutProperty(renterAsianLayer, 'visibility', 'none');
-            map.setLayoutProperty(renterBlackLayer, 'visibility', 'none');
-            map.setLayoutProperty(renterLatinxLayer, 'visibility', 'none');
-            map.setLayoutProperty(renterWhiteLayer, 'visibility', 'none');
+            map.setLayoutProperty(renterAsianLayer, "visibility", "none");
+            map.setLayoutProperty(renterBlackLayer, "visibility", "none");
+            map.setLayoutProperty(renterLatinxLayer, "visibility", "none");
+            map.setLayoutProperty(renterWhiteLayer, "visibility", "none");
             map.addLayer({
                 "id": "census-fills",
                 "type": "fill",
@@ -208,7 +211,7 @@ export default class Map extends React.Component {
             this.clearStats();
 
             const features = map.queryRenderedFeatures(e.point);
-            console.log('getting features', features)
+            console.log("getting features", features)
             let selection = JSON.parse(JSON.stringify(selectionTemplate));
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
@@ -237,22 +240,28 @@ export default class Map extends React.Component {
     toggleDemography = (e) => {
         let visibility;
         if (e.target.id === "asian") {
-            visibility = !this.state.showAsianRenters ? 'visible' : 'none';
-            map.setLayoutProperty(renterAsianLayer, 'visibility', visibility);
+            visibility = !this.state.showAsianRenters ? "visible" : "none";
+            map.setLayoutProperty(renterAsianLayer, "visibility", visibility);
             this.setState({showAsianRenters: !this.state.showAsianRenters});
         } else if (e.target.id === "black") {
-            visibility = !this.state.showBlackRenters ? 'visible' : 'none';
-            map.setLayoutProperty(renterBlackLayer, 'visibility', visibility);
+            visibility = !this.state.showBlackRenters ? "visible" : "none";
+            map.setLayoutProperty(renterBlackLayer, "visibility", visibility);
             this.setState({showBlackRenters: !this.state.showBlackRenters});
         } else if (e.target.id === "latinx") {
-            visibility = !this.state.showLatinxRenters ? 'visible' : 'none';
-            map.setLayoutProperty(renterLatinxLayer, 'visibility', visibility);
+            visibility = !this.state.showLatinxRenters ? "visible" : "none";
+            map.setLayoutProperty(renterLatinxLayer, "visibility", visibility);
             this.setState({showLatinxRenters: !this.state.showLatinxRenters});
         } else if (e.target.id === "white") {
-            visibility = !this.state.showWhiteRenters ? 'visible' : 'none'
-            map.setLayoutProperty(renterWhiteLayer, 'visibility', visibility);
+            visibility = !this.state.showWhiteRenters ? "visible" : "none"
+            map.setLayoutProperty(renterWhiteLayer, "visibility", visibility);
             this.setState({showWhiteRenters: !this.state.showWhiteRenters});
         }
+    }
+
+    toggleTownNames = () => {
+        let visibility = !this.state.showTownNames ? "visible" : "none";
+        this.setState({showTownNames: !this.state.showTownNames})
+        map.setLayoutProperty(townNames, "visibility", visibility);
     }
 
     reset = () => {
@@ -269,39 +278,73 @@ export default class Map extends React.Component {
     render() {
         return (
             <>
-                <div ref={this.mapContainer} className="map-container" style={this.mapStyles}/>
-                <div className={"map-key"}>
-                    Show areas with large concentration of populations:
-                    <ul>
-                        <li className={"population key"}>
-                            <button className={"key-box mt-1 mr-1 bg-green"}
-                                    aria-label={"Show large Asian population"}
-                                    id="asian"
-                                    onClick={this.toggleDemography}/>
-                            <span className={"float-left mr-2"}>Asian</span>
-                        </li>
-                        <li className={"population key"}>
-                            <button className={"key-box mt-1 mr-1 bg-pink"}
-                                    aria-label={"Show large Black population"}
-                                    id="black"
-                                    onClick={this.toggleDemography}/>
-                            <span className={"float-left mr-2"}>Black</span>
-                        </li>
-                        <li className={"population key"}>
-                            <button className={"key-box mt-1 mr-1 bg-orange"}
-                                    aria-label={"Show large Latinx population"}
-                                    id="latinx"
-                                    onClick={this.toggleDemography}/>
-                            <span className={"float-left mr-2"}>Latinx</span>
-                        </li>
-                        <li className={"population key"}>
-                            <button className={"key-box mt-1 mr-1 bg-blue"}
-                                    aria-label={"Show large White population"}
-                                    id="white"
-                                    onClick={this.toggleDemography}/>
-                            <span className={"float-left mr-2"}>White</span>
-                        </li>
-                    </ul>
+                <h1 className={"pb-2"}>Eviction rate by census tract</h1>
+                <div className={"map-content"}>
+                    <div ref={this.mapContainer} className="map-container" style={this.mapStyles}/>
+
+                    <div id="legend">
+                        <div className="legend">
+                            <div className="form-check form-switch">
+                                <label className="form-check-label"
+                                       htmlFor="flexSwitchCheckDefault">Show town names</label>
+                                <input className="form-check-input" type="checkbox"
+                                       id="flexSwitchCheckDefault" onClick={this.toggleTownNames}/>
+                            </div>
+                            <div className="content pt-1 pb-0 pl-1 pr-0">
+                                <h2 className={"legend-title"}>Map Legend</h2>
+                                <h4 className={"subtitle"}>
+                                    Click on the map to find out more
+                                    location-based information</h4>
+                                <span className={"key-swatch square key-0 pl-2"}/>
+                                <label className={"map-key float-left mr-2"}>0+</label>
+                                <span className={"key-swatch square key-45 pl-2"}/>
+                                <label className={"map-key float-left mr-2"}>45+</label>
+                                <span className={"key-swatch square key-90 pl-2"}/>
+                                <label className={"map-key float-left mr-2"}>90+</label>
+                                <span className={"key-swatch square key-135 pl-2"}/>
+                                <label className={"map-key float-left mr-2"}>135+</label>
+                                <span className={"key-swatch square key-170 pl-2"}/>
+                                <label className={"map-key float-left mr-2"}>170+ evictions per 1000
+                                    people</label>
+                            </div>
+                            <br/>
+                            <div className={"map-key"}>
+                                <small>Click the circles to show the areas with large concentration
+                                    of
+                                    populations:</small>
+                                <ul>
+                                    <li className={"population key"}>
+                                        <button className={"key-swatch circle mt-1 mr-1 bg-green"}
+                                                aria-label={"Show large Asian population"}
+                                                id="asian"
+                                                onClick={this.toggleDemography}/>
+                                        <span className={"float-left mr-2 mt-1"}>Asian</span>
+                                    </li>
+                                    <li className={"population key"}>
+                                        <button className={"key-swatch circle mt-1 mr-1 bg-yellow"}
+                                                aria-label={"Show large Black population"}
+                                                id="black"
+                                                onClick={this.toggleDemography}/>
+                                        <span className={"float-left mr-2 mt-1"}>Black</span>
+                                    </li>
+                                    <li className={"population key"}>
+                                        <button className={"key-swatch circle mt-1 mr-1 bg-teal"}
+                                                aria-label={"Show large Latinx population"}
+                                                id="latinx"
+                                                onClick={this.toggleDemography}/>
+                                        <span className={"float-left mr-2 mt-1"}>Latinx</span>
+                                    </li>
+                                    <li className={"population key"}>
+                                        <button className={"key-swatch circle mt-1 mr-1 bg-blue"}
+                                                aria-label={"Show large White population"}
+                                                id="white"
+                                                onClick={this.toggleDemography}/>
+                                        <span className={"float-left mr-2 mt-1"}>White</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </>
         );

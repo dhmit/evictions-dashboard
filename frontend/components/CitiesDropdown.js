@@ -12,24 +12,39 @@ function formatCities(city) {
 }
 
 const customStyles = {
-    menu: (provided, state) => ({
+    menu: (provided) => ({
         ...provided,
-        width: state.selectProps.width,
         color: "black",
-        margin: 20,
+        padding: 0,
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: 'white',
+        padding: 0
+    }),
+    indicatorsContainer: (provided) => ({
+        ...provided,
+        backgroundColor: "#1a1b23",
+    }),
+    control: (provided) => ({
+        ...provided,
+        backgroundColor: "#1a1b23",
+        border: "0.02em solid #565656",
         borderRadius: 0,
     }),
-
-    control: (_, {selectProps: {width}}) => ({
-        width: width
+    option: (provided, state) => ({
+        ...provided,
+        borderBottom: "1px dotted #565656",
+        color: state.isSelected ? "pink" : "white",
+        padding: 20,
+        backgroundColor: "#1f202a"
     }),
-
-    singleValue: (provided) => {
-        const color = "white";
-        const fontSize = "24px";
-        const transition = "opacity 300ms";
-        return {...provided, fontSize, color, transition};
-    }
+    singleValue: (provided, state) => ({
+        ...provided,
+        opacity: state.isDisabled ? 0.5 : 1,
+        color: "#ffffff",
+        transition: "opacity 300ms",
+    })
 }
 
 

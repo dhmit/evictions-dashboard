@@ -1,0 +1,13 @@
+#details {
+    h3 {
+        font-size: 1em;
+        margin-bottom: 0 !important;
+    }
+
+    .table.table-dark {
+        border: 0.01em solid $gray-medium-darker;
+        th, td, tr {
+            background-color: #1f202a !important;
+        }
+    }
+}

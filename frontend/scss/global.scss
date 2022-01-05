@@ -1,5 +1,6 @@
 body {
-    font-family: titillium_webregular, serif !important;
+    font-family: titillium_weblight, sans-serif !important;
+    letter-spacing: 0.03em;
 }
 
 ul {
@@ -11,6 +12,10 @@ li {
 }
 
 /* TEXT STYLES */
+.font-weight-semibold {
+    font-family: "titillium_websemibold", sans-serif;
+}
+
 .green-text {
     color: $green;
 }
@@ -19,47 +24,58 @@ li {
     color: $blue;
 }
 
-.red-text {
-    color: $red;
-}
-
-.pink-text {
-    color: $pink;
+.section-header {
+    color: $gray-medium;
 }
 
 .white-text {
     color: $white;
 }
 
-.bg-orange {
-    background-color: #fe9b10;
+.bg-teal {
+    background-color: #2ffef7;
 }
 
 .bg-green {
     background-color: #49ff42;
 }
 
-.bg-pink {
-    background-color: #f41fff;
+.bg-yellow {
+    background-color: #e5ff24;
 }
 
 .bg-blue {
-    background-color: #38a5ff;
+    background-color: #383fff;
 }
 
+h4.subtitle {
+    font-size: 0.8em;
+    margin-bottom: 1em !important;
+    //font-style: italic;
+    font-family: "titillium_weblight_italic", sans-serif;
+    color: $gray-medium;
+}
 
 #main-container {
     padding: 1em 2em;
 }
 
 /* buttons */
+
+.btn, .btn-outline-light, .btn-sm {
+    border-radius: 0 !important;
+}
+
 .btn-transparent {
-    border: 2px solid $white;
+    border: 0.01em solid $white;
     color: $white;
     background: none;
+    padding: 0.1em 0.2em;
+    font-family: titillium_webextralight, sans-serif;
+
 
     &:hover, &:focus {
-        border: 2px solid $pink;
+        border: 0.01em solid $pink;
         color: $pink;
     }
 
@@ -74,7 +90,21 @@ li {
     }
 }
 
-// sorry
-.mapboxgl-ctrl-logo {
-    display: none !important;
+.nav-link {
+    font-size: 0.8em;
+}
+
+#about-page {
+    h1, h2 {
+        margin-top: 1em;
+        font-family: titillium_websemibold, sans-serif;
+    }
+
+    h1 {
+        font-size: 1.25em;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
 }

@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 const baseURL = "/evictions/";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const log = true
-const colors = [[255, 255, 255], [255, 255, 255], [255, 166, 166], [255, 49, 49], [61, 113, 210], [44, 170, 115], [212, 30, 33], [90, 200, 48]];
 export default class CitiesGraph extends React.Component {
     static propTypes = {
         setStats: PropTypes.func,
@@ -21,10 +20,12 @@ export default class CitiesGraph extends React.Component {
                 y: [],
                 type: "scatter",
                 mode: "lines+markers",
-                marker: {color: "red"}
             },
             {type: "bar", x: [], y: []}
         ],
+        plotlyOptions: {
+            displayModeBar: false,
+        },
         updatedDropdown: false,
         currentTown: "",
     }
@@ -65,10 +66,6 @@ export default class CitiesGraph extends React.Component {
             y: [],
             type: "bar",
             name: "2020",
-            marker: {
-                color: [],
-                opatown: 1
-            }
         };
     }
 
@@ -82,7 +79,10 @@ export default class CitiesGraph extends React.Component {
                 data.y[month] = evictions[year][month];
             }
             data.name = year;
-            data.marker.color = `rgb(${colors[c][0]}, ${colors[c][1]}, ${colors[c][2]})`;
+            data.marker = {color: "white"};
+            data.hoverlabel = {bgcolor: "#eaffae"};
+            data.hovertemplate = "%{x}: %{y} evictions filed";
+            data.showticklabels = false;
             plotlyData.push(data);
             c += 1;
         }
@@ -107,6 +107,8 @@ export default class CitiesGraph extends React.Component {
 
     render() {
         return <>
+            <h3>Town-level data</h3>
+            <h4 className={"subtitle"}>Select a town from the dropdown to see overall data</h4>
             <CitiesDropdown
                 town={this.props.town}
                 value={this.props.town}
@@ -115,6 +117,7 @@ export default class CitiesGraph extends React.Component {
             {this.state.plotlyData && this.state.plotlyData.length > 0 &&
             <Plot
                 data={this.state.plotlyData}
+                config={this.state.plotlyOptions}
                 layout={
                     {
                         margin: {l: 20, r: 10, t: 0, b: 80},
@@ -122,11 +125,15 @@ export default class CitiesGraph extends React.Component {
                         plot_bgcolor: "rgba(0,0,0,0)",
                         showgrid: false,
                         showlegend: false,
+                        hoverlabel: {bgcolor: "#eaffae"},
                         height: 200,
                         width: 300,
                         font: {
                             size: 10,
                             color: "#ffffff",
+                        },
+                        marker: {
+                            color: "white",
                         },
                         xaxis: {
                             showgrid: false,
@@ -143,7 +150,7 @@ export default class CitiesGraph extends React.Component {
                 }
             />}
             {this.state.plotlyData && this.state.plotlyData.length === 0 &&
-                <>No data</>
+            <>No data</>
             }
 
         </>
