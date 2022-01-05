@@ -14,15 +14,11 @@ function formatCities(city) {
 const customStyles = {
     menu: (provided) => ({
         ...provided,
-        // width: state.selectProps.width,
         color: "black",
         padding: 0,
-        // margin: 20,
-        // borderRadius: 0,
     }),
     input: (provided) => ({
         ...provided,
-        // backgroundColor: 'blue',
         color: 'white',
         padding: 0
     }),
@@ -48,20 +44,7 @@ const customStyles = {
         opacity: state.isDisabled ? 0.5 : 1,
         color: "#ffffff",
         transition: "opacity 300ms",
-
-        // return {...provided, opacity, backgroundColor, transition};
     })
-    //
-    // control: (_, {selectProps: {width}}) => ({
-    //     width: width
-    // }),
-
-    // singleValue: (provided) => {
-    //     color: "white";
-    //     const fontSize = "24px";
-    //     const transition = "opacity 300ms";
-    //     return {...provided, fontSize, color, transition};
-    // }
 }
 
 
