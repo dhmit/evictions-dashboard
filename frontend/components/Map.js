@@ -211,7 +211,6 @@ export default class Map extends React.Component {
             this.clearStats();
 
             const features = map.queryRenderedFeatures(e.point);
-            console.log("getting features", features)
             let selection = JSON.parse(JSON.stringify(selectionTemplate));
             for (let i = 0; i < features.length; i++) {
                 let feature = features[i];
