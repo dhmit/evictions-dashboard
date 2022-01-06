@@ -51,7 +51,6 @@ li {
 h4.subtitle {
     font-size: 0.8em;
     margin-bottom: 1em !important;
-    //font-style: italic;
     font-family: "titillium_weblight_italic", sans-serif;
     color: $gray-medium;
 }
@@ -92,6 +91,11 @@ h4.subtitle {
 
 .nav-link {
     font-size: 0.8em;
+}
+
+.navbar-dark > .navbar-toggler {
+    border: 0;
+    border-radius: 0;
 }
 
 #about-page {

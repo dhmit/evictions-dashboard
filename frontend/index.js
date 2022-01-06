@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./scss/index.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 import Base from "./components/global/Base";
 import ErrorNotFoundComponent from "./components/ErrorNotFoundComponent";
 import Home from "./components/Home";

@@ -19,7 +19,7 @@ const customStyles = {
     }),
     input: (provided) => ({
         ...provided,
-        color: 'white',
+        color: "white",
         padding: 0
     }),
     indicatorsContainer: (provided) => ({
